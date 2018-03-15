@@ -1,1 +1,2 @@
 https://docs.oracle.com/javafx/2/api/javafx/scene/media/package-summary.html
+https://openclassrooms.com/courses/structurez-vos-donnees-avec-xml/dom-exemple-d-utilisation-en-java
