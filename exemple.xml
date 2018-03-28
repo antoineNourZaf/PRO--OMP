@@ -1,0 +1,17 @@
+<bibliotheque>
+	<videos>
+	</videos>
+	<audios>
+	</audios>
+	<playlists>
+		<playlist>
+			<name>titre</name>
+			<content>
+				<song>id1</song>
+				<song>id2</song>
+				<song>id3</song>
+				<vid>id4</vid>
+			</content> 
+		</playlist>
+	</playlists>
+</bibliotheque>
