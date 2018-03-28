@@ -3,3 +3,5 @@ https://openclassrooms.com/courses/structurez-vos-donnees-avec-xml/dom-exemple-d
 
 Pour doriane (lecture de fichier audio) ->
 https://openclassrooms.com/forum/sujet/lire-de-l-audio-dans-une-application-java-51398 
+
+https://openclassrooms.com/courses/les-applications-web-avec-javafx/les-medias-3
