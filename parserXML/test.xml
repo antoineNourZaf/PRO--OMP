@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<bibliotheque>
+	<videos >
+		<video type="RnB" > singuila </video>
+		<video type="coupe decalé"> trey song </video>
+	</videos>	
+	<audios>
+		<audio id="1" >
+			<titre>La puissance</titre>
+			<format>mp3</format>
+			<artiste>MHD</artiste>
+			<duree>03:12</duree>
+			<album>AfroTrap</album>
+			<annee>2017</annee>
+			<image></image>
+		</audio>
+		
+		<audio id="2">
+			<titre>misérable</titre>
+			<format>mp3</format>
+			<artiste>Singuila</artiste>
+			<duree>04:10</duree>
+			<album>L'enfant du pays</album>
+			<annee>2010</annee>
+			<image></image>		
+		</audio>	
+	</audios>	
+	<playlists>
+		<playlist>
+			<name>titre</name>
+			<content>
+				<song>id1</song>
+				<song>id2</song>
+				<song>id3</song>
+				<vid>id4</vid>
+			</content> 
+		</playlist>
+		
+		<playlist>
+			<name>titre2</name>
+			<content>
+				<song>maalhox</song>
+				<song>yemi alade</song>
+				<song>booba</song>
+				<vid>kery </vid>
+			</content> 
+		</playlist>
+	</playlists>	
+</bibliotheque>
