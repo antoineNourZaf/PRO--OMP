@@ -6,6 +6,8 @@
 package extractdata;
 import java.io.File;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Map;
 import javafx.application.Application;
 import javafx.collections.MapChangeListener;
 import javafx.collections.MapChangeListener.Change;
@@ -33,12 +35,17 @@ public class ExtractData extends Application {
   private Label album;
   private Label title;
   private Label year;
+  private Label format;
   private ImageView albumCover;
+  private Label duration;
+  private Label genre;
   
   private String Artiste;
   private String Album;
   private String Titre;
   private String Annee;
+  private String Format;
+  private String Duration;
   
 
   public static void main(String[] args) {
@@ -70,11 +77,28 @@ public class ExtractData extends Application {
     final GridPane gp = new GridPane();
     gp.setPadding(new Insets(10));
     gp.setHgap(20);
+    
+    String ERREUR = "donnee pas disponible";
+    
+    if(Annee == null){
+        year.setText("Annee :   " + ERREUR );
+    }
+    if(Album == null){
+        album.setText("Album :   " + ERREUR);
+    }
+    
    // gp.add(albumCover, 0, 0, 1, GridPane.REMAINING);
     gp.add(title , 1, 0);
     gp.add(artist, 1, 1);
-    gp.add(album, 1, 2);
-    gp.add(year, 1, 3);
+    gp.add(album,1, 2);
+    gp.add(year,1, 3);
+    gp.add(format,1, 4);
+    gp.add(duration,1,5);
+    gp.add(genre,1,6);
+    
+
+    
+ 
     
     final ColumnConstraints c0 = new ColumnConstraints();
     final ColumnConstraints c1 = new ColumnConstraints();
@@ -97,6 +121,11 @@ public class ExtractData extends Application {
     title.setId("title");
     year = new Label();
     year.setId("year");
+    format = new Label();
+    format.setId("format");
+    duration = new Label();
+    genre = new  Label();
+ 
     
     final Reflection reflection = new Reflection();
     reflection.setFraction(0.2);
@@ -114,14 +143,21 @@ public class ExtractData extends Application {
   private void createMedia() {
     try {
         
-      File filestring = new File("C:\\Users\\z-ack\\Documents\\musique\\La Fouine - Ma meilleure ft. Zaho.mp3");
+      File filestring = new File("C:\\Users\\z-ack\\Documents\\musique\\Michael Jackson;The Cleveland Orchestra - Will You Be There.mp3");
       media = new Media(filestring.toURI().toString());
+      
+      ArrayList<String>  metadata = new ArrayList<>();
+   
+      
+      
+      
       media.getMetadata().addListener(new MapChangeListener<String, Object>() {
         @Override
         public void onChanged(Change<? extends String, ? extends Object> ch) {
           if (ch.wasAdded()) {
             handleMetadata(ch.getKey(), ch.getValueAdded());
           }
+          
         }
       });
      
@@ -131,12 +167,34 @@ public class ExtractData extends Application {
         public void run() {
           final String errorMessage = media.getError().getMessage();
           System.out.println("MediaPlayer Error: " + errorMessage);
+           
         }
       });
       
-       
+     
+      /*System.out.println("Duration: "+media.getDuration().toSeconds());
+      mediaPlayer.play();*/
+      
+         mediaPlayer.setOnReady(new Runnable() {
 
-      mediaPlayer.play();
+        @Override
+        public void run() {
+
+            System.out.println("Duration: "+media.getDuration().toMinutes());
+               Duration = "Duration: "+ media.getDuration().toMinutes();
+               duration.setText(Duration);
+
+            // display media's metadata
+            for (Map.Entry<String, Object> entry : media.getMetadata().entrySet()){
+                System.out.println(entry.getKey() + ": " + entry.getValue());
+                metadata.add(entry.getKey() + ": " + entry.getValue());
+            }
+
+            // play if you want
+            mediaPlayer.play();
+        }
+    });
+      
 
     } catch (RuntimeException re) {
       System.out.println("Caught Exception: " + re.getMessage());
@@ -144,21 +202,33 @@ public class ExtractData extends Application {
   }
 
   private void handleMetadata(String key, Object value) {
+      
+    format.setText("Format:  "+ "mp3");
     if (key.equals("album")) {
-      album.setText( "album: " + value.toString());
+      album.setText( "Album : " + value.toString());
       Album = value.toString();
-    } else if (key.equals("artist")) {
-      artist.setText("artist:   " + value.toString());
+    }
+    if (key.equals("artist")) {
+      artist.setText("Artist  :   " + value.toString());
        Artiste = value.toString();
-    } if (key.equals("title")) {
-      title.setText("title:   " + value.toString());
+    }
+    if (key.equals("title")) {
+      title.setText("Title    :   " + value.toString());
       Titre = value.toString();
-    } if (key.equals("year")) {
-      year.setText(value.toString());
+    } 
+    if (key.equals("year")) {
+      year.setText("Annee :   " +value.toString());
       Annee = value.toString();
-    } if (key.equals("image")) {
+    } 
+    if (key.equals("image")) {
       albumCover.setImage((Image)value);
     }
+    
+    if(key.equals("genre")){
+        genre.setText("Genre :   " + value.toString());
+        
+    }
+    
   }
 }
 
