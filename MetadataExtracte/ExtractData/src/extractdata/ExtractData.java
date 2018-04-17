@@ -57,6 +57,7 @@ public class ExtractData extends Application {
         System.out.println(Album);
         System.out.println(Titre);
         System.out.println(Annee);
+        System.out.println(Duration);
    }
 
   @Override
@@ -97,9 +98,6 @@ public class ExtractData extends Application {
     gp.add(genre,1,6);
     
 
-    
- 
-    
     final ColumnConstraints c0 = new ColumnConstraints();
     final ColumnConstraints c1 = new ColumnConstraints();
     c1.setHgrow(Priority.ALWAYS);
@@ -114,30 +112,16 @@ public class ExtractData extends Application {
 
   private void createControls() {
     artist = new Label();
-    artist.setId("artist");
     album = new Label();
-    album.setId("album");
     title = new Label();
-    title.setId("title");
     year = new Label();
-    year.setId("year");
     format = new Label();
-    format.setId("format");
     duration = new Label();
     genre = new  Label();
  
     
     final Reflection reflection = new Reflection();
     reflection.setFraction(0.2);
-
- /* final URL url = getClass().getResource("C:\\Users\\z-ack\\Pictures\\Camera Roll\\la-fouine-la-fouine-laouni.png");
-  final Image image = new Image(url.toString());
-    
-  albumCover = new ImageView(image);
-   albumCover.setFitWidth(240);
-   albumCover.setPreserveRatio(true);
-  albumCover.setSmooth(true);
-    albumCover.setEffect(reflection);*/
   }
 
   private void createMedia() {
@@ -148,9 +132,6 @@ public class ExtractData extends Application {
       
       ArrayList<String>  metadata = new ArrayList<>();
    
-      
-      
-      
       media.getMetadata().addListener(new MapChangeListener<String, Object>() {
         @Override
         public void onChanged(Change<? extends String, ? extends Object> ch) {
@@ -171,17 +152,15 @@ public class ExtractData extends Application {
         }
       });
       
-     
-      /*System.out.println("Duration: "+media.getDuration().toSeconds());
-      mediaPlayer.play();*/
-      
          mediaPlayer.setOnReady(new Runnable() {
 
         @Override
         public void run() {
-
-            System.out.println("Duration: "+media.getDuration().toMinutes());
-               Duration = "Duration: "+ media.getDuration().toMinutes();
+               int seconde = (int) media.getDuration().toSeconds();
+               int nbresecond = seconde%60;
+               int nbreminut = (seconde/60)%60; 
+               Duration = "Duration: "+ nbreminut + ":" + nbresecond;
+               System.out.println(Duration);  
                duration.setText(Duration);
 
             // display media's metadata
@@ -189,13 +168,11 @@ public class ExtractData extends Application {
                 System.out.println(entry.getKey() + ": " + entry.getValue());
                 metadata.add(entry.getKey() + ": " + entry.getValue());
             }
-
-            // play if you want
+            
             mediaPlayer.play();
         }
     });
       
-
     } catch (RuntimeException re) {
       System.out.println("Caught Exception: " + re.getMessage());
     }
@@ -223,7 +200,6 @@ public class ExtractData extends Application {
     if (key.equals("image")) {
       albumCover.setImage((Image)value);
     }
-    
     if(key.equals("genre")){
         genre.setText("Genre :   " + value.toString());
         
