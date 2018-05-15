@@ -127,7 +127,7 @@ public class ExtractData extends Application {
   private void createMedia() {
     try {
         
-      File filestring = new File("C:\\Users\\z-ack\\Documents\\musique\\Michael Jackson;The Cleveland Orchestra - Will You Be There.mp3");
+      File filestring = new File("C:\\Users\\Antoine\\Downloads\\Feelin' you.mp3");
       media = new Media(filestring.toURI().toString());
       
       ArrayList<String>  metadata = new ArrayList<>();
@@ -159,7 +159,7 @@ public class ExtractData extends Application {
                int seconde = (int) media.getDuration().toSeconds();
                int nbresecond = seconde%60;
                int nbreminut = (seconde/60)%60; 
-               Duration = "Duration: "+ nbreminut + ":" + nbresecond;
+               Duration = "Duree: "+ nbreminut + ":" + nbresecond;
                System.out.println(Duration);  
                duration.setText(Duration);
 
