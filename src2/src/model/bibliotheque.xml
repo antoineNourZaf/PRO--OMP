@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<Bibliotheque>
+   <Audios>
+      
+   
+   
+   
+   <Audio id="4">
+         <Chemin>C:\Users\Antoine\Downloads\Feelin' you.mp3</Chemin>
+         <Titre>Feelin' You</Titre>
+         <Artiste>Donell Jones</Artiste>
+         <Duree>4:17</Duree>
+         <Album>ClipConverter.cc</Album>
+         <Format>mp3</Format>
+      </Audio>
+   
+   
+   <Audio id="7">
+         <Chemin>C:\Users\Antoine\Music\duro.mp3</Chemin>
+         <Titre>sans titre</Titre>
+         <Artiste>Tekno</Artiste>
+         <Duree>3:32</Duree>
+         <Album/>
+         <Format>mp3</Format>
+      </Audio>
+   </Audios>
+   <Videos/>
+   <Playlists/>
+</Bibliotheque>
