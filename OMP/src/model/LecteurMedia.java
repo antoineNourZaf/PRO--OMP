@@ -1,6 +1,7 @@
 
 package model;
 
+import controller.MediaPlayerViewController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -16,10 +17,12 @@ public class LecteurMedia extends Application {
    @Override
    public void start(Stage secondaryStage) throws Exception {
       
-      Parent root = FXMLLoader.load(getClass().getResource("C:\\Users\\Antoine\\Documents\\NetBeansProjects\\OMP\\src\\view\\sample.fxml"));
+      Parent root = FXMLLoader.load(getClass().getResource("view/mediaPlayerView.fxml"));
       secondaryStage.setTitle("OMP");
       secondaryStage.setScene(new Scene(root, 400, 400));
       secondaryStage.show();
+      
+      
 
    }
    

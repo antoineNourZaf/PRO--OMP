@@ -19,12 +19,14 @@ import javax.xml.transform.OutputKeys;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import model.Audio;
+import model.Media;
+import model.Video;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-public class BibliothequeManager /*extends Observable*/{
+public class BibliothequeManager /*extends Observable*/ {
 
    private DocumentBuilderFactory dbFactory;
    private DocumentBuilder dBuilder;
@@ -67,7 +69,7 @@ public class BibliothequeManager /*extends Observable*/{
       dbFactory = DocumentBuilderFactory.newInstance();
       try {
          dBuilder = dbFactory.newDocumentBuilder();
-         
+
       } catch (Exception ex) {
          Logger.getLogger(BibliothequeManager.class.getName()).log(Level.SEVERE, null, ex);
       }
@@ -87,10 +89,10 @@ public class BibliothequeManager /*extends Observable*/{
 
       // Si le fichier n'existe pas, on le crée
       if (!FICHIER_XML.exists()) {
-         
+
          File directory = new File("./media");
          directory.mkdir();
-         
+
          // Element bibliothèque
          Element root = doc.createElement("Bibliotheque");
          doc.appendChild(root);
@@ -180,6 +182,70 @@ public class BibliothequeManager /*extends Observable*/{
          audio.appendChild(duree);
          audio.appendChild(album);
          audio.appendChild(format);
+
+      } catch (IOException | TransformerException | DOMException | SAXException ex) {
+         Logger.getLogger(BibliothequeManager.class.getName()).log(Level.SEVERE, null, ex);
+
+      }
+
+      doc.normalizeDocument();
+      docToXML();
+      /*setChanged();
+      notifyObservers(Controller.class.getSimpleName());*/
+   }
+
+   /**
+    * Cette fonction ajoute au fichier xml de la bibliotheque les details de la
+    * musique que l'on veut.
+    *
+    * @param chanson Le fichier a ajouter à la bibliotheque
+    */
+   public void ajouterVideo(Video clip) {
+
+      try {
+         createBibliotheque();
+         doc = dBuilder.parse(FICHIER_XML.getAbsolutePath());
+         doc.normalize();
+         NodeList videosList = doc.getElementsByTagName("Videos");
+         Element video = doc.createElement("Video");
+
+         Node videos = videosList.item(0);
+
+         // Si le noeud "audios" a des elements "audio" , on verifie que la 
+         // chanson existe déja dans le fichier xml, auquel cas on la supprime 
+         if (videos.hasChildNodes()) {
+
+            // On recupere les chemins
+            NodeList cheminList = doc.getElementsByTagName("Chemin");
+
+            // On regarde si un des audios possède le chemin qu'on insere
+            for (int i = 0; i < cheminList.getLength(); ++i) {
+
+               Node chemin = cheminList.item(i);
+
+               // Si oui, on supprime le noeud <Video> qui contient deja le chemin
+               // car il est en double
+               if (chemin.getTextContent().equals(clip.getPath())) {
+                  Node videoNode = chemin.getParentNode();
+                  Node videosNode = videoNode.getParentNode();
+
+                  videosNode.removeChild(videoNode);
+                  //--givenId;
+               }
+            }
+         }
+         videos.normalize();
+         videos.appendChild(video);
+         video.setAttribute("id", String.valueOf(++givenId));
+
+         Element cheminAcces = doc.createElement("Chemin");
+         cheminAcces.setTextContent(clip.getPath().replace("\0", ""));
+
+         Element titre = doc.createElement("Titre");
+         titre.setTextContent(clip.getTitre().replace("\0", ""));
+
+         video.appendChild(cheminAcces);
+         video.appendChild(titre);
 
       } catch (IOException | TransformerException | DOMException | SAXException ex) {
          Logger.getLogger(BibliothequeManager.class.getName()).log(Level.SEVERE, null, ex);
@@ -381,65 +447,63 @@ public class BibliothequeManager /*extends Observable*/{
          // Fenetre pop-Up
       }
    }
-   
+
    public void deletePlaylist(String nomPlaylist) {
-      
+
       try {
          doc = dBuilder.parse(FICHIER_XML.getAbsolutePath());
-         
+
          // On prends tout les titres de playlists
          NodeList listeTitreP = doc.getElementsByTagName("TitreP");
-         
+
          // On cherche celle à effacer
          int length = listeTitreP.getLength();
-         
+
          for (int i = 0; i < length; ++i) {
-            
+
             Node titre = listeTitreP.item(i);
             // Une fois qu on a trouve la playlist avec le titre recherche on l'
             // efface
             if (titre.getTextContent().equals(nomPlaylist)) {
-               
+
                Node playlist = titre.getParentNode();
                Node playlists = playlist.getParentNode();
                playlists.removeChild(playlist);
             }
          }
          docToXML();
-      }
-      catch(IOException | SAXException e) {
+      } catch (IOException | SAXException e) {
          // Fenetre pop-up
       }
    }
-   
+
    public String getPath(String id) {
-      
+
       String path = "";
-      
+
       try {
          doc = dBuilder.parse(FICHIER_XML.getAbsolutePath());
-         
+
          // Recupere tout les elements audios
          NodeList audioList = doc.getElementsByTagName("Audio");
          int length = audioList.getLength();
-         
+
          // Pour chaque Audio, on regarde son id
          for (int i = 0; i < length; ++i) {
-            
+
             Node audio = audioList.item(i);
             Node idAudio = audio.getAttributes().item(0);
-            
+
             // Si l'audio a l'id recherché, on recupere son chemin d'acces
             if (idAudio.getTextContent().equals(id)) {
                Node chemin = audio.getFirstChild();
                return chemin.getTextContent();
             }
          }
-      }
-      catch (Exception e) {
+      } catch (Exception e) {
          //Fenetre pop-up
       }
-      
+
       return path;
    }
 

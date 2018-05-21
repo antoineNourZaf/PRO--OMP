@@ -35,11 +35,14 @@ import javax.swing.*;
 import javax.swing.text.JTextComponent;
 import java.awt.*;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 
 public class Controller /*implements Observer*/ {
 
@@ -117,7 +120,7 @@ public class Controller /*implements Observer*/ {
       try {
          bibli.createBibliotheque();
       } catch (Exception e) {
-         
+
       }
    }
 
@@ -306,10 +309,10 @@ public class Controller /*implements Observer*/ {
         });
         return "";
     }*/
-   public void tableViewCliqued(MouseEvent click) {
+   public void tableViewCliqued(MouseEvent click) throws IOException {
 
+      MediaExtracted extracted = (MediaExtracted) tableView.getSelectionModel().getSelectedItem();
       if (click.getClickCount() == 2 && tableView.getSelectionModel().getSelectedItem() != tableView.getColumns().get(0)) {
-         MediaExtracted extracted = (MediaExtracted) tableView.getSelectionModel().getSelectedItem();
 
          //Media media;
          //MediaPlayer mediaPlayer;
@@ -317,26 +320,29 @@ public class Controller /*implements Observer*/ {
          //media = new Media(filestring.toURI().toString());
          //mediaPlayer = new MediaPlayer(media);
          if (extracted.getFormat().equals("mp3")) {
-            dernierContenuJoues.add(extracted.getTitre());
-            LecteurMedia player = new LecteurMedia();
             try {
-               player.start(new Stage());
-            } catch (Exception ex) {
+               dernierContenuJoues.add(extracted.getTitre());
+               FXMLLoader loader = new FXMLLoader(getClass().getResource("../view/mediaPlayerView.fxml"));
+               Stage stage = new Stage();
+               Parent root = (Parent) loader.load();
+
+               MediaPlayerViewController controller = loader.getController();
+               controller.setMedia(extracted.getCheminAcces());
+               loader.setController(controller);
+
+               Scene scene = new Scene(root);
+
+               stage.setScene(scene);
+
+               stage.show();
+            } catch (IOException ex) {
                Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
             }
-
-         } else if (extracted.getFormat().equals("mp4") || extracted.getFormat().equals("wav")) {
-            dernierContenuJoues.add(extracted.getTitre());
-
-         } else {
-            shwoPopUpError("Unknown Format");
          }
 
       }
 
       if (click.getButton() == (MouseButton.SECONDARY)) {
-
-         MediaExtracted extracted = (MediaExtracted) tableView.getSelectionModel().getSelectedItem();
 
          System.out.println("Menu !");
 
@@ -423,19 +429,31 @@ public class Controller /*implements Observer*/ {
          // on recupere le chemin du fichier
          cheminFichier = new FileSystemOpen().run();
 
-         DataExtracteur md = new DataExtracteur(cheminFichier);
-         Audio audio = new Audio(cheminFichier);
+         // On regarde quel type de fichier on ajoute
+         boolean fichierAudio = (cheminFichier.contains("wav") || cheminFichier.contains("mp3") || cheminFichier.contains("aiff"));
 
-         audio.setFormat();
+         if (fichierAudio) {
 
-         // On peut seulement obtenir les metadatas des fichiers mp3
-         if (cheminFichier.contains("mp3")) {
-            md.ExtractionMetadata(cheminFichier, audio, bibli);
+            DataExtracteur md = new DataExtracteur(cheminFichier);
+            Audio audio = new Audio(cheminFichier);
+
+            // On peut seulement obtenir les metadatas des fichiers mp3
+            if (cheminFichier.contains("mp3")) {
+               System.out.println(audio.getPath());
+               audio.setFormat();
+               md.ExtractionMetadata(cheminFichier, audio, bibli);
+            } else {
+               audio.setTitre(cheminFichier);
+               bibli.ajouterMusique(audio);
+            }
+
+            updateTableView();
+            bibli.creerPlaylist("maPlaylist");
+            bibli.addToPlaylist("maPlaylist", audio.getPath());
          } else {
-            audio.setTitre(cheminFichier);
-            bibli.ajouterMusique(audio);
+            Video video = new Video(cheminFichier);
+            bibli.ajouterVideo(video);
          }
-         updateTableView();
 
       } catch (Exception e) {
          e.printStackTrace();

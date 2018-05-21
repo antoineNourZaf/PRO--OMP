@@ -32,7 +32,7 @@ public class Media {
       return titre;
    }
    
-   public final String getChemin() {
+   public  String getPath() {
       return chemin;
    }
    

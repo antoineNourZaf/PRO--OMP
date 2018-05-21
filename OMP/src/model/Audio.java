@@ -22,9 +22,10 @@ public class Audio extends Media{
       format = "";
    }
    
-   public String getPath() {
-      return cheminAcces;
-   }
+  @Override
+  public String getPath() {
+     return cheminAcces;
+  }
 
    public String getAlbum() {
 
