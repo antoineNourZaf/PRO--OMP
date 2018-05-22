@@ -42,8 +42,9 @@ public class FileSystemOpen{
         // présentant à l'ouverture le contenu du répertoire de connexion.
         try{
             FileChooser fenetreDialogue = new FileChooser();
-            fenetreDialogue.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("mp3", "*.mp3"));
-            fenetreDialogue.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("mp4", "*.mp4"));
+            fenetreDialogue.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Audio Files", "*.mp3","*.aiff","*.wav"));
+            fenetreDialogue.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Video Files", "*.mp4","*.flv","*.m4a","*.fxm"));
+            fenetreDialogue.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("All Files", "*.*"));
             fenetreDialogue.setInitialDirectory( new File("/Users/" + System.getProperty("user.name") + "/Downloads"));
             fichier = fenetreDialogue.showOpenDialog(new Stage());
             System.out.println(fichier.getPath());

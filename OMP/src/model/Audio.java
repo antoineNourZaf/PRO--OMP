@@ -2,7 +2,7 @@ package model;
 
 import controller.BibliothequeManager;
 
-public class Audio extends Media{
+public class Audio {
 
    private String cheminAcces;
    private String titre;
@@ -22,7 +22,7 @@ public class Audio extends Media{
       format = "";
    }
    
-  @Override
+  
   public String getPath() {
      return cheminAcces;
   }
@@ -68,7 +68,13 @@ public class Audio extends Media{
    public void setAnnee(String annee) {
       this.annee = annee;
    }
+   public void setTitre(String titre) {
+      this.titre = titre;
+   }
    
+   public String getTitre() {
+      return titre;
+   }
    public void setFormat() {
       
       if (cheminAcces.contains("mp3"))

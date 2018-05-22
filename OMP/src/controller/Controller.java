@@ -1,19 +1,15 @@
 package controller;
 
-import javafx.application.Platform;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.adapter.JavaBeanStringPropertyBuilder;
 import javafx.collections.FXCollections;
-import javafx.collections.MapChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.scene.Group;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
+import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextArea;
@@ -27,22 +23,20 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.util.Callback;
 import model.*;
 import org.w3c.dom.Element;
 
 import javax.swing.*;
-import javax.swing.text.JTextComponent;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
+import javafx.scene.media.Media;
 
 public class Controller /*implements Observer*/ {
 
@@ -52,12 +46,6 @@ public class Controller /*implements Observer*/ {
    public TextArea affichagesResultats;
    public TextArea affichageAmis;
    public TextArea affichageInfos;
-   public TextField utilisateur;
-   public TextField mdp;
-   public Button Login;
-   public Label insertionTitre;
-   public Label playlistOuInserer;
-   public TextField insertionTitr;
    public TextField playlistOuInsere;
    public Button afficheInfos;
 
@@ -82,8 +70,9 @@ public class Controller /*implements Observer*/ {
 
    public StackPane StackPane;
    public VBox Vbox;
-   public MenuItem ajoutAPlaylist;
+   public MenuItem ajoutPlaylist;
    public MenuItem ouvertureDeFichier;
+   public Menu ajouterMediaAplaylist;
 
    MenuItem choix3;
    MenuItem choix2;
@@ -101,12 +90,14 @@ public class Controller /*implements Observer*/ {
    private BibliothequeManager bibli;
    private int nbOfPlaylists;
 
+   private ArrayList<String> playlistsAjoutees;
+
    @FXML
    public void initialize() {
       initializeBibli();
       createTreeViews();
       setColumsOfTableView();
-      initializePopUp();
+      //initializePopUp();
    }
 
    String rechercheDemandee;
@@ -117,36 +108,10 @@ public class Controller /*implements Observer*/ {
 
    private void initializeBibli() {
       bibli = new BibliothequeManager();
-      try {
-         bibli.createBibliotheque();
-      } catch (Exception e) {
-
-      }
+      playlistsAjoutees = new ArrayList<>();
    }
 
    private void initializePopUp() {
-      /*menuPopUp= new JPopupMenu();
-        choix1= new JMenuItem("Lire");
-        choix2= new JMenuItem("Ajouter a une playlist");
-        choix3 = new JMenuItem("Supprimer");
-
-        menuPopUp.add(choix1);
-        menuPopUp.add(choix2);
-        menuPopUp.add(choix3);*/
- /*anchorPane = new AnchorPane();
-
-        contextMenu = new ContextMenu();
-        choix1= new MenuItem("Lire");
-        choix2= new MenuItem("Ajouter a une playlist");
-        choix3 = new MenuItem("Supprimer");
-        contextMenu.getItems().addAll(choix1, choix2, choix3);
-
-        choix1.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                System.out.println("Cut...");
-            }
-        });*/
 
       Stage dialog = new Stage();
       dialog.initModality(Modality.APPLICATION_MODAL);
@@ -156,17 +121,53 @@ public class Controller /*implements Observer*/ {
       dialog.setScene(dialogScene);
       dialog.show();
 
-      /*Stage popUp = new Stage();
-        VBox box = new VBox();
-        Scene scene = new Scene(box, 400, 300);
+   }
 
-        contextMenu = new ContextMenu();
-        choix1= new MenuItem("Lire");
-        choix2= new MenuItem("Ajouter a une playlist");
-        choix3 = new MenuItem("Supprimer");
-        contextMenu.getItems().addAll(choix1, choix2, choix3);
-        //box.add
-        popUp.setScene(scene);*/
+   public void ajouterUnMediaAUnePlaylist(ActionEvent actionEvent) {
+
+      Menu menu = (Menu) actionEvent.getSource();
+      MediaExtracted extracted = (MediaExtracted) tableView.getSelectionModel().getSelectedItem();
+
+      String cheminTitre = extracted.getCheminAcces();
+      TreeItem item = (TreeItem) PlaylistTree.getSelectionModel().getSelectedItem();
+      String cheminPlaylist = (String) item.getValue();
+
+      bibli.addToPlaylist(cheminPlaylist, cheminTitre);
+      /*for(MenuItem item : menu.getItems()){
+            //if(item.getText().equalsIgnoreCase("playlist1")){
+
+            // On peut seulement obtenir les metadatas des fichiers mp3
+            if (cheminFichier.contains("mp3")) {
+                md.ExtractionMetadata(cheminFichier,audio, bibli);
+            }
+            else {
+                audio.setTitre(cheminFichier);
+                bibli.ajouterMusique(audio);
+            }
+            updateTableView();
+
+
+        }catch (Exception e) {
+            e.printStackTrace();
+        }*/
+      System.out.println("fin Ajout playlist");
+   }
+// lire la playlist lors d'un double click
+
+   public void playlistSelectedToRead(MouseEvent mouseEvent) {
+      if (mouseEvent.getClickCount() == 2) {
+         MenuItem playlistSelectionnee = (MenuItem) PlaylistTree.getSelectionModel().getSelectedItem();
+         String nomplaylistSelectionnee = playlistSelectionnee.getText(); //nom de la playlist selectionnee
+         System.out.println("Double click sur " + nomplaylistSelectionnee);
+
+         ArrayList<String> identifiantsDesPlayistALire = new ArrayList<>(); // recuperer les ids des audio de la playlist selectionnee
+         //lancer le lecteur de playlist de Zack
+      }
+   }
+
+   public void ajouterFichierDepuisMenu(ActionEvent actionEvent) {
+      openFileSystem(actionEvent);
+
    }
 
    /*@Override
@@ -242,14 +243,22 @@ public class Controller /*implements Observer*/ {
 
    // update tableview on case where
    public void updateTableView() {
-      parser = new ParserXML();
-      tableView.setItems(getExtractedMedia());
+
+      try {
+         parser = new ParserXML();
+         Thread.sleep(500);
+         tableView.setItems(getExtractedMedia());
+      } catch (InterruptedException ex) {
+         Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+      }
 
    }
 
    public ObservableList<MediaExtracted> getExtractedMedia() {
       ObservableList<MediaExtracted> extractedmedias = FXCollections.observableArrayList();
       ArrayList<Element> audio = parser.getAudiosDonnees();
+      ArrayList<Element> video = parser.getVideosDonnees();
+      System.out.println(video.size());
       if (audio == null) {
          return extractedmedias;
       } else {
@@ -270,7 +279,7 @@ public class Controller /*implements Observer*/ {
                typeMedia = "audio";
 
             } // si c'est un format de type video affiche le type video
-            else if (format.getTextContent().equals("mp4") || format.getTextContent().equals("wav")) {
+            else if (format.getTextContent().equals("mp4") || format.getTextContent().equals("flv")) {
                typeMedia = "video";
 
             } //sinon affiche que le type n'est pas reconnu
@@ -285,6 +294,26 @@ public class Controller /*implements Observer*/ {
             MediaExtracted media = new MediaExtracted(
                     id, titre.getTextContent(), format.getTextContent(), artiste.getTextContent(),
                     duree.getTextContent(), album.getTextContent(), "", "image vide", typeMedia,
+                    cheminAcces.getTextContent());
+            extractedmedias.add(media);
+         }
+         
+         for (int i = 0; i < video.size(); ++ i) {
+            Element identifiant = (Element) video.get(i);
+            String id = identifiant.getAttribute("id");
+            Element titre = (Element) video.get(i).getElementsByTagName("Titre").item(0);
+            Element format = (Element) video.get(i).getElementsByTagName("Format").item(0);
+            Element duree = (Element) video.get(i).getElementsByTagName("Duree").item(0);
+            String typeMedia = "video";
+            Element cheminAcces = (Element) video.get(i).getElementsByTagName("Chemin").item(0);
+            
+            System.out.println(id + titre.getTextContent() + format.getTextContent()
+                    + duree.getTextContent()  + "" + "image vide" + typeMedia
+                    + cheminAcces.getTextContent());
+            
+            MediaExtracted media = new MediaExtracted(
+                    id, titre.getTextContent(), format.getTextContent(), "",
+                    duree.getTextContent(),"",  "", "", "video",
                     cheminAcces.getTextContent());
             extractedmedias.add(media);
          }
@@ -309,8 +338,7 @@ public class Controller /*implements Observer*/ {
         });
         return "";
     }*/
-   public void tableViewCliqued(MouseEvent click) throws IOException {
-
+   public void tableViewCliqued(MouseEvent click) {
       MediaExtracted extracted = (MediaExtracted) tableView.getSelectionModel().getSelectedItem();
       if (click.getClickCount() == 2 && tableView.getSelectionModel().getSelectedItem() != tableView.getColumns().get(0)) {
 
@@ -319,25 +347,24 @@ public class Controller /*implements Observer*/ {
          //File filestring = new File(extracted.getCheminAcces());
          //media = new Media(filestring.toURI().toString());
          //mediaPlayer = new MediaPlayer(media);
-         if (extracted.getFormat().equals("mp3")) {
-            try {
-               dernierContenuJoues.add(extracted.getTitre());
-               FXMLLoader loader = new FXMLLoader(getClass().getResource("../view/mediaPlayerView.fxml"));
-               Stage stage = new Stage();
-               Parent root = (Parent) loader.load();
+         try {
+            dernierContenuJoues.add(extracted.getTitre());
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("../view/mediaPlayerView.fxml"));
+            Stage stage = new Stage();
+            Parent root = (Parent) loader.load();
 
-               MediaPlayerViewController controller = loader.getController();
-               controller.setMedia(extracted.getCheminAcces());
-               loader.setController(controller);
+            MediaPlayerViewController controller = loader.getController();
+            controller.setMedia(extracted.getCheminAcces());
+            loader.setController(controller);
 
-               Scene scene = new Scene(root);
+            Scene scene = new Scene(root);
 
-               stage.setScene(scene);
+            stage.setScene(scene);
 
-               stage.show();
-            } catch (IOException ex) {
-               Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            stage.show();
+
+         } catch (IOException ex) {
+            Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
          }
 
       }
@@ -388,12 +415,14 @@ public class Controller /*implements Observer*/ {
    public void ajouterPlaylist(ActionEvent actionEvent) {
       //ajout de nouvelle playlist a la treeView
 
-//        affichagesResultats.setText("Titre ajouté a votre collection !  Souhaitez vous visualiser  ce média ?");
       //MediaExtracted extracted = (MediaExtracted) tableView.getSelectionModel().getSelectedItem();
       //PlaylistTree.getTreeItem(1).getChildren().add(extracted);
       TreeItem<String> newPlaylist = new TreeItem<String>("playlist" + (++nbOfPlaylists));
       PlaylistTree.getRoot().getChildren().add(newPlaylist);
-      //Vbox.getChildren().addAll(PlaylistTree);
+      playlistsAjoutees.add(newPlaylist.getValue());
+      ajouterMediaAplaylist.getItems().add(new MenuItem(newPlaylist.getValue()));
+
+      bibli.creerPlaylist(newPlaylist.getValue());
 
    }
 
@@ -412,48 +441,51 @@ public class Controller /*implements Observer*/ {
 
    }
 
-   public void pisteButtonClicked(ActionEvent actionEvent) {
-      categorieActuelle = CATEGORIE.PISTE;
-      resetOtherButtonClicked(isInPiste, isInPlaylists, isInAlbums, isInArtistes);
-   }
-
-   public void albumsButtonClicked(ActionEvent actionEvent) {
-
-      categorieActuelle = CATEGORIE.ALBUMS;
-      resetOtherButtonClicked(isInAlbums, isInPiste, isInPlaylists, isInArtistes);
-   }
-
    public void openFileSystem(ActionEvent actionEvent) {
+
       try {
 
+         boolean fichierVideo;
          // on recupere le chemin du fichier
          cheminFichier = new FileSystemOpen().run();
 
-         // On regarde quel type de fichier on ajoute
-         boolean fichierAudio = (cheminFichier.contains("wav") || cheminFichier.contains("mp3") || cheminFichier.contains("aiff"));
+         // On regarde si c est une video ou un audio
+         fichierVideo = cheminFichier.contains("mp4") || cheminFichier.contains("flv");
 
-         if (fichierAudio) {
+         if (fichierVideo) {
+            System.out.println("Fichier video ajouté");
+            Video video = new Video(cheminFichier);
+            Media media = new Media(new File(cheminFichier).toURI().toString());
+            Thread.sleep(200);
+            if (!media.getDuration().isIndefinite() && !media.getDuration().isUnknown()) {
+
+               double minute = media.getDuration().toMinutes() % 60;
+               double secondes = media.getDuration().toSeconds() % 60;
+
+               int min = (int) minute;
+               int sec = (int) secondes;
+
+               video.setDuree(String.format("%02d:%02d", min, sec));
+            }
+            bibli.ajouterVideo(video);
+            Thread.sleep(250);
+         } else {
 
             DataExtracteur md = new DataExtracteur(cheminFichier);
             Audio audio = new Audio(cheminFichier);
 
+            audio.setFormat();
+
             // On peut seulement obtenir les metadatas des fichiers mp3
             if (cheminFichier.contains("mp3")) {
-               System.out.println(audio.getPath());
-               audio.setFormat();
                md.ExtractionMetadata(cheminFichier, audio, bibli);
             } else {
                audio.setTitre(cheminFichier);
                bibli.ajouterMusique(audio);
-            }
 
-            updateTableView();
-            bibli.creerPlaylist("maPlaylist");
-            bibli.addToPlaylist("maPlaylist", audio.getPath());
-         } else {
-            Video video = new Video(cheminFichier);
-            bibli.ajouterVideo(video);
+            }
          }
+         updateTableView();
 
       } catch (Exception e) {
          e.printStackTrace();
@@ -489,10 +521,6 @@ public class Controller /*implements Observer*/ {
       //Playlist
       TreeItem<String> rootItemP = new TreeItem<String>("Playlists");
       rootItemP.setExpanded(true);
-      for (int i = 1; i < 6; i++) {
-         TreeItem<String> item = new TreeItem<String>("playlist n°" + i);
-         rootItemP.getChildren().add(item);
-      }
 
       PlaylistTree = new TreeView<String>(rootItemP);
       PlaylistTree.setEditable(true);

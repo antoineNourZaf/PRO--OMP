@@ -19,7 +19,7 @@ import javax.xml.transform.OutputKeys;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import model.Audio;
-import model.Media;
+
 import model.Video;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Node;
@@ -65,7 +65,10 @@ public class BibliothequeManager /*extends Observable*/ {
    public BibliothequeManager() {
 
       FICHIER_XML = new File("./media/bibliotheque.xml");
-
+      if (FICHIER_XML.exists()){
+         File directory = new File("./media");
+         directory.mkdir();
+      }
       dbFactory = DocumentBuilderFactory.newInstance();
       try {
          dBuilder = dbFactory.newDocumentBuilder();
@@ -243,10 +246,19 @@ public class BibliothequeManager /*extends Observable*/ {
 
          Element titre = doc.createElement("Titre");
          titre.setTextContent(clip.getTitre().replace("\0", ""));
+         
+         Element duree = doc.createElement("Duree");
+         duree.setTextContent(clip.getDuree().replace("\0", ""));
+         
+         Element format = doc.createElement("Format");
+         format.setTextContent(clip.getFormat().replace("\0", ""));
 
          video.appendChild(cheminAcces);
          video.appendChild(titre);
-
+         video.appendChild(duree);
+         video.appendChild(format);
+         
+         System.out.println("passe dans ajoutVideo");
       } catch (IOException | TransformerException | DOMException | SAXException ex) {
          Logger.getLogger(BibliothequeManager.class.getName()).log(Level.SEVERE, null, ex);
 
@@ -308,6 +320,22 @@ public class BibliothequeManager /*extends Observable*/ {
          // Creation de l'element playlist
          Element playlist = doc.createElement("Playlist");
 
+         // Si une playlist du meme nom a déja été crée, on ne la crée pas
+         NodeList titrePlaylist = doc.getElementsByTagName("TitrePlaylist");
+
+         if (titrePlaylist.getLength() > 0) {
+
+            for (int i = 0; i < titrePlaylist.getLength(); ++i) {
+               Node titre = titrePlaylist.item(i);
+               if (titre.getTextContent().equals(name)) {
+                  System.err.println("Une playlist avec ce nom existe deja");
+                  // Afficher message erreur indiquant qu une playlist possedant
+                  // ce nom existe deja
+                  return;
+               }
+            }
+         }
+
          // Insertion du titre
          Element titreP = doc.createElement("TitrePlaylist");
          titreP.setTextContent(name);
@@ -342,32 +370,59 @@ public class BibliothequeManager /*extends Observable*/ {
     * @param path Le chemin du media que l'on ajoute
     */
    public void addToPlaylist(String titrePlaylist, String path) {
-
+      System.out.println("addToPlaylist");
       try {
          // Parser le xml
          doc = dBuilder.parse(FICHIER_XML.getAbsolutePath());
          doc.normalize();
-
+         Element mediaId = doc.createElement("MediaID");
+         // Recuperation de l'element <Playlists>
+         NodeList audiosList = doc.getElementsByTagName("Playlists");
+         Node audio = audiosList.item(0);
+         
          // Retrouver la playlist ou on veut ajouter la chanson
-         NodeList titrePList = doc.getElementsByTagName("TitreP");
+         NodeList titrePList = doc.getElementsByTagName("TitrePlaylist");
          int nbPlaylist = titrePList.getLength();
 
-         // On parcourt tout les tags <TitreP>
+         // On parcourt tout les tags <TitrePLaylist>
          for (int i = 0; i < nbPlaylist; ++i) {
 
-            Node titreP = titrePList.item(i);
-
-            if (titreP.getTextContent().equals(titrePlaylist)) {
-
+            // On trouve le nom de la playlist
+            if (titrePList.item(i).getTextContent().equals(titrePlaylist)) {
+               
+               Node titreP = titrePList.item(i);
+               // On recupere le parent <Playlist>
                Node playlist = titreP.getParentNode();
-               Node content = titreP.getNextSibling();
+               
+               NodeList contents = playlist.getChildNodes();
+               for (int k = 0; k < contents.getLength(); ++k) {
+                  if (contents.item(k).getNodeName().equals("Content")){
+                     Node content = contents.item(k);
+                     
+                     System.out.println(content.getParentNode().getNodeName());
+                     mediaId.setTextContent(getId(path));
+                     System.out.println(getId(path));
+                     System.out.println(content.getNodeName());
+                     
+                     playlist.appendChild(content);
+                     content.appendChild(mediaId);
+                     
+                     doc.normalize();
+                     docToXML();
+                     if (content.hasChildNodes()) {
+                        System.out.println("Append reussi");
+                        for (int j = 0; j < content.getChildNodes().getLength();j++) {
+                           System.out.println(content.getChildNodes().item(j).getNodeName());
+                           System.out.println(content.getChildNodes().item(j).getTextContent());
+                        }
+                     }
+                     return;
+                  }
+               }
 
-               Element media = doc.createElement("MediaId");
-               media.setTextContent(getId(path));
-               content.appendChild(media);
             }
          }
-         docToXML();
+         
       } catch (IOException | SAXException e) {
 
       }

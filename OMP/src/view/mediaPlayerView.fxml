@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.image.*?>
 <?import javafx.scene.*?>
 <?import javafx.scene.paint.*?>
 <?import javafx.scene.effect.*?>
@@ -9,7 +10,7 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-<GridPane prefHeight="829.0" prefWidth="1026.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.MediaPlayerViewController">
+<GridPane fx:id="gridPane" onKeyTyped="#exitFullScreen" prefHeight="829.0" prefWidth="1026.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.MediaPlayerViewController">
    <columnConstraints>
       <ColumnConstraints />
    </columnConstraints>
@@ -21,15 +22,20 @@
    <children>
       <ToolBar fx:id="sliderToolbar" prefHeight="40.0" prefWidth="1249.0" GridPane.rowIndex="1">
          <items>
-            <Slider fx:id="sliderTime" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="-Infinity" onMouseDragged="#moveTime" prefHeight="61.0" prefWidth="932.0" showTickMarks="true" />
+            <Slider fx:id="sliderTime" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onMouseDragged="#moveTime" prefHeight="61.0" prefWidth="932.0" showTickMarks="true" />
             <Label fx:id="timeLabel" text="Label" />
          </items>
       </ToolBar>
-      <Pane prefHeight="718.0" prefWidth="1026.0">
+      <Pane onKeyTyped="#onExitFullScreen" prefHeight="718.0" prefWidth="1026.0">
          <children>
             <Group fx:id="groupScene">
                <children>
                   <MediaView fx:id="mediaView" onMouseClicked="#onClickMediaView" />
+                  <ImageView fx:id="imageView" fitHeight="644.0" fitWidth="1028.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../model/data/music.jpg" />
+                     </image>
+                  </ImageView>
                </children>
             </Group>
          </children>

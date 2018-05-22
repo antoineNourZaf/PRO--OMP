@@ -20,6 +20,8 @@ import javafx.beans.binding.Bindings;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.event.EventHandler;
+import javafx.event.EventType;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Rectangle2D;
@@ -32,14 +34,19 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.ToolBar;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import javafx.util.Duration;
 
 /**
@@ -79,14 +86,40 @@ public class MediaPlayerViewController {
    private Button slowButton;
    @FXML
    private Button fastButton;
+   @FXML
+   private GridPane gridPane;
+   @FXML
+   private ImageView imageView;
 
    public void setMedia(String path) {
 
       media = new Media(new File(path).toURI().toString());
       mediaPlayer = new MediaPlayer(media);
 
-      // Creer la vue à partir du media player
-      mediaView.setMediaPlayer(mediaPlayer);
+      // Creer la vue à partir du media player si c'est une video.
+      if (media.getSource().contains("mp4") || media.getSource().contains("flv")) {
+         mediaView.setMediaPlayer(mediaPlayer);
+         
+         // On regle la resolution du lecteur afin qu'il s'adapte à celle de la video
+         DoubleProperty mvw = mediaView.fitWidthProperty();
+         DoubleProperty mvh = mediaView.fitHeightProperty();
+         mvw.bind(Bindings.selectDouble(mediaView.sceneProperty(), "width"));
+         mvh.bind(Bindings.selectDouble(mediaView.sceneProperty(), "height"));
+         mediaView.setViewport(new Rectangle2D(0, 0, mediaView.getFitWidth(), mediaView.getFitHeight()));
+         mediaView.setPreserveRatio(true);
+         imageView.setVisible(false);
+      } 
+      // Sinon on affiche une image
+      else {
+         mediaView.setVisible(false);
+         DoubleProperty mvw = imageView.fitWidthProperty();
+         DoubleProperty mvh = imageView.fitHeightProperty();
+         mvw.bind(Bindings.selectDouble(imageView.sceneProperty(), "width"));
+         mvh.bind(Bindings.selectDouble(imageView.sceneProperty(), "height"));
+         imageView.setViewport(new Rectangle2D(0, 0, imageView.getFitWidth(), imageView.getFitHeight()));
+         imageView.setPreserveRatio(true);
+         
+      }
 
       volumeButton.setValue(mediaPlayer.getVolume() * 100);
 
@@ -102,7 +135,7 @@ public class MediaPlayerViewController {
             }
          }
       });
-      
+
       // On règle les ecouteurs pour regler le slider du temps
       mediaPlayer.currentTimeProperty().addListener(new ChangeListener() {
          @Override
@@ -110,7 +143,7 @@ public class MediaPlayerViewController {
             updateValues();
          }
       });
-      
+
       mediaPlayer.currentTimeProperty().addListener((Observable ov) -> {
          updateValues();
       });
@@ -119,25 +152,20 @@ public class MediaPlayerViewController {
          duration = mediaPlayer.getMedia().getDuration();
          updateValues();
       });
-      
-      // On obtient le debit de la vidéo
+
+      // On obtient le debit du media
       mRate = mediaPlayer.getRate();
       
-      // On regle la resolution du lecteur afin qu'il s'adapte à celle de la video
-      DoubleProperty mvw = mediaView.fitWidthProperty();
-      DoubleProperty mvh = mediaView.fitHeightProperty();
-      mvw.bind(Bindings.selectDouble(mediaView.sceneProperty(), "width"));
-      mvh.bind(Bindings.selectDouble(mediaView.sceneProperty(), "height"));
-      mediaView.setViewport(new Rectangle2D(0, 0, mediaView.getFitWidth(), mediaView.getFitHeight()));
-      mediaView.setPreserveRatio(true);
+      
+      
    }
-
    /**
     * Initializes the controller class.
     */
    public void initialize() {
 
       fullscreen = false;
+
    }
 
    public MediaView getMediaView() {
@@ -201,10 +229,10 @@ public class MediaPlayerViewController {
    private void fullScreenClicked(MouseEvent event) {
 
       fullscreen = !fullscreen;
-      Stage stage = (Stage) fsButton.getScene().getWindow();
+      Stage stage = (Stage) mediaView.getScene().getWindow();
       stage.setFullScreen(fullscreen);
-      toolBarButton.setOpacity(0);
-      sliderToolbar.setOpacity(0);
+      toolBarButton.setVisible(!fullscreen);
+      sliderToolbar.setVisible(!fullscreen);
 
    }
 
@@ -281,7 +309,7 @@ public class MediaPlayerViewController {
 
    @FXML
    private void ralentirVideo(MouseEvent event) {
-      
+
       if (mRate >= 1.) {
          mRate = 0.75;
          slowButton.setText("x 0.5");
@@ -323,6 +351,32 @@ public class MediaPlayerViewController {
          mRate = 1.;
          fastButton.setText("Fast");
          mediaPlayer.setRate(mRate);
+      }
+   }
+
+   @FXML
+   private void onExitFullScreen(KeyEvent event) {
+      // Si la touche pressé est ESC, alors on sors du mode fullscreen, autrement
+      // il ne se passe rien
+      if (event.getCode() == KeyCode.ESCAPE && fullscreen) {
+         fullscreen = !fullscreen;
+         stage = (Stage) fsButton.getScene().getWindow();
+         stage.setFullScreen(fullscreen);
+         toolBarButton.setOpacity(1);
+         sliderToolbar.setOpacity(1);
+      }
+   }
+
+   @FXML
+   private void exitFullScreen(KeyEvent event) {
+      // Si la touche pressé est ESC, alors on sors du mode fullscreen, autrement
+      // il ne se passe rien
+      if (event.getCode() == KeyCode.ESCAPE && fullscreen) {
+         fullscreen = !fullscreen;
+         stage = (Stage) fsButton.getScene().getWindow();
+         stage.setFullScreen(fullscreen);
+         toolBarButton.setOpacity(1);
+         sliderToolbar.setOpacity(1);
       }
    }
 }

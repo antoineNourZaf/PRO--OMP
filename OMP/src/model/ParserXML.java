@@ -15,172 +15,170 @@ import org.xml.sax.SAXException;
 
 public class ParserXML {
 
-
-private NodeList audios;
-private NodeList videos;
-private NodeList playlists;
-private ArrayList<Element> audiosDonnees;
-private ArrayList<Element> videosDonnees;
-private ArrayList<Element> playlistsDonnees;
-
-     public ParserXML() {
-        /*
+   private NodeList audios;
+   private NodeList videos;
+   private NodeList playlists;
+   private ArrayList<Element> audiosDonnees;
+   private ArrayList<Element> videosDonnees;
+   private ArrayList<Element> playlistsDonnees;
+   private ArrayList<Element> tabAudios = new ArrayList<>();
+   private ArrayList<Element> tabVideos = new ArrayList<>();
+   
+   public ParserXML() {
+      /*
          * récupération d'une instance de la classe "DocumentBuilderFactory"
-         */
-        final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+       */
+      final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 
-        try {
-            /*
+      try {
+         /*
              *  création d'un parseur
-             */
-            final DocumentBuilder builder = factory.newDocumentBuilder();
+          */
+         final DocumentBuilder builder = factory.newDocumentBuilder();
 
-            /*
+         /*
 	     *  création d'un Document
-             */
-            final Document document = builder.parse(new File("./media/bibliotheque.xml"));
+          */
+         final Document document = builder.parse(new File("./media/bibliotheque.xml"));
 
-            /*
+         /*
 	     *  récupération de l'Element racine
-             */
-            final Element racine = document.getDocumentElement();
+          */
+         final Element racine = document.getDocumentElement();
 
-            /*
+         /*
 	     *  récupération des noeuds
-             */
-            final NodeList racineNoeuds = racine.getChildNodes();
-            final int nbRacineNoeuds = racineNoeuds.getLength();
+          */
+         final NodeList racineNoeuds = racine.getChildNodes();
+         final int nbRacineNoeuds = racineNoeuds.getLength();
 
-            for (int i = 0; i < nbRacineNoeuds; i++) {
+         for (int i = 0; i < nbRacineNoeuds; i++) {
 
-                //permet de selectionner uniquement les noeuds du fichiers xml
-                if (racineNoeuds.item(i).getNodeType() == Node.ELEMENT_NODE) {
+            //permet de selectionner uniquement les noeuds du fichiers xml
+            if (racineNoeuds.item(i).getNodeType() == Node.ELEMENT_NODE) {
 
-                    //on recupere chaque noeud (videos, audios ou playlists)
-                    final Element principalNode = (Element) racineNoeuds.item(i);
+               //on recupere chaque noeud (videos, audios ou playlists)
+               final Element principalNode = (Element) racineNoeuds.item(i);
 
+               // récupération des numéros de videos
+               videos = principalNode.getElementsByTagName("Video");
+               videosDonnees = mesVideos(videos);
 
-		       // récupération des numéros de videos
+               // récupération  des audios
+               audios = principalNode.getElementsByTagName("Audio");
 
-                    videos = principalNode.getElementsByTagName("Video");
-                    videosDonnees = mesVideos(videos);
+               audiosDonnees = mesAudios(audios);
 
+               //récupération des playlists
+               playlists = principalNode.getElementsByTagName("Playlist");
 
-		     // récupération  des audios
+               playlistsDonnees = mesPlaylist(playlists);
 
-                   audios = principalNode.getElementsByTagName("Audio");
-
-                    audiosDonnees =  mesAudios(audios);
-
-
-		     //récupération des playlists
-
-                    playlists = principalNode.getElementsByTagName("Playlist");
-
-                    playlistsDonnees = mesPlaylist(playlists);
-
-
-                }
             }
-        } catch (final Exception e) {
-            e.printStackTrace();
-        }
+         }
+      } catch (final Exception e) {
+         e.printStackTrace();
+      }
 
-    }
+   }
 
-    public ArrayList<Element> mesPlaylist(NodeList nodeplaylist){
+   public ArrayList<Element> mesPlaylist(NodeList nodeplaylist) {
 
-        final int nbplaylistsElements = nodeplaylist.getLength();
+      final int nbplaylistsElements = nodeplaylist.getLength();
 
+      for (int j = 0; j < nbplaylistsElements; j++) {
+         final Element playlist = (Element) nodeplaylist.item(j);
+         final Element name = (Element) playlist.getElementsByTagName("Name").item(0);
+         //System.out.println(name.getTextContent());
 
-        for (int j = 0; j < nbplaylistsElements; j++) {
-            final Element playlist = (Element) nodeplaylist.item(j);
-            final Element name = (Element) playlist.getElementsByTagName("Name").item(0);
-            //System.out.println(name.getTextContent());
+         final NodeList contents = playlist.getElementsByTagName("MediaID");
+         final int nbcontentsElements = contents.getLength();
 
-            final NodeList contents = playlist.getElementsByTagName("MediaID");
-            final int nbcontentsElements = contents.getLength();
+         for (int k = 0; k < nbcontentsElements; k++) {
+            final Element song = (Element) contents.item(k);
+            //ajouter a playlist
+            //Affichage du song
+            //System.out.println(song.getTextContent());
+         }
 
-            for (int k = 0; k < nbcontentsElements; k++) {
-                final Element song = (Element) contents.item(k);
-                //ajouter a playlist
-                //Affichage du song
-                //System.out.println(song.getTextContent());
-            }
+      }
+      return new ArrayList<Element>();
+   }
 
-        }
-        return new ArrayList<Element>();
-    }
+   public ArrayList<Element> mesVideos(NodeList nodevideos) {
 
-    public ArrayList<Element> mesVideos(NodeList videos){
+      final int nbvideosElements = videos.getLength();
+     
+      for (int j = 0; j < nbvideosElements; j++) {
 
-        final int nbvideosElements = videos.getLength();
-        ArrayList<Element> tabVideos = new ArrayList<Element>();
+         tabVideos.add((Element) nodevideos.item(j));
 
-        for (int j = 0; j < nbvideosElements; j++) {
-            tabVideos.add((Element) videos.item(j));
+         System.out.println("\n========================================");
+         final Element audio = (Element) nodevideos.item(j);
+         //System.out.println("identifiant : " + audio.getAttribute("id"));
 
-        }
+         final Element titre = (Element) audio.getElementsByTagName("Titre").item(0);
+         //System.out.println("titre : " + titre.getTextContent());
 
-        return tabVideos;
-    }
-
-
-
-    private ArrayList<Element> tabAudios = new ArrayList<Element>();
-
-    public ArrayList<Element> mesAudios( NodeList nodeaudios ){
-
-
-        final int nbaudiosElements = nodeaudios.getLength();
-
-        for (int j = 0; j < nbaudiosElements; j++) {
-
-            tabAudios.add((Element) nodeaudios.item(j));
+         final Element format = (Element) audio.getElementsByTagName("Format").item(0);
+         //System.out.println("format : " + format.getTextContent());
 
 
-            System.out.println("\n========================================");
-            final Element audio = (Element) nodeaudios.item(j);
-            //System.out.println("identifiant : " + audio.getAttribute("id"));
+         final Element duree = (Element) audio.getElementsByTagName("Duree").item(0);
+         //System.out.println("duree : " + duree.getTextContent());
 
-            final Element titre = (Element) audio.getElementsByTagName("Titre").item(0);
-            //System.out.println("titre : " + titre.getTextContent());
+      }
 
-            final Element format = (Element) audio.getElementsByTagName("Format").item(0);
-            //System.out.println("format : " + format.getTextContent());
+      return tabVideos;
+   }
 
-            final Element artiste = (Element) audio.getElementsByTagName("Artiste").item(0);
-            //System.out.println("artiste : " + artiste.getTextContent());
+   public ArrayList<Element> mesAudios(NodeList nodeaudios) {
 
-            final Element duree = (Element) audio.getElementsByTagName("Duree").item(0);
-            //System.out.println("duree : " + duree.getTextContent());
+      final int nbaudiosElements = nodeaudios.getLength();
 
-            final Element album = (Element) audio.getElementsByTagName("Album").item(0);
-            //System.out.println("album : " + album.getTextContent());
+      for (int j = 0; j < nbaudiosElements; j++) {
 
-            //final Element annee = (Element) audio.getElementsByTagName("Annee").item(0);
-            //System.out.println("annee : " + annee.getTextContent());
+         tabAudios.add((Element) nodeaudios.item(j));
 
-            //final Element image = (Element) audio.getElementsByTagName("image").item(0);
-            //System.out.println("image : " + image.getTextContent());
+         System.out.println("\n========================================");
+         final Element audio = (Element) nodeaudios.item(j);
+         //System.out.println("identifiant : " + audio.getAttribute("id"));
 
-        }
+         final Element titre = (Element) audio.getElementsByTagName("Titre").item(0);
+         //System.out.println("titre : " + titre.getTextContent());
 
-        return tabAudios;
+         final Element format = (Element) audio.getElementsByTagName("Format").item(0);
+         //System.out.println("format : " + format.getTextContent());
 
+         final Element artiste = (Element) audio.getElementsByTagName("Artiste").item(0);
+         //System.out.println("artiste : " + artiste.getTextContent());
 
-    }
+         final Element duree = (Element) audio.getElementsByTagName("Duree").item(0);
+         //System.out.println("duree : " + duree.getTextContent());
 
-    public ArrayList<Element> getAudiosDonnees() {
-        //System.out.println(audiosDonnees.get(0).toString());
-        return audiosDonnees;
-    }
+         final Element album = (Element) audio.getElementsByTagName("Album").item(0);
+         //System.out.println("album : " + album.getTextContent());
 
-    public ArrayList<Element> getVideosDonnees() {
-        return videosDonnees;
-    }
+         //final Element annee = (Element) audio.getElementsByTagName("Annee").item(0);
+         //System.out.println("annee : " + annee.getTextContent());
+         //final Element image = (Element) audio.getElementsByTagName("image").item(0);
+         //System.out.println("image : " + image.getTextContent());
+      }
 
-    public ArrayList<Element> getPlaylistsDonnees() {
-        return playlistsDonnees;
-    }
+      return tabAudios;
+
+   }
+
+   public ArrayList<Element> getAudiosDonnees() {
+      //System.out.println(audiosDonnees.get(0).toString());
+      return audiosDonnees;
+   }
+
+   public ArrayList<Element> getVideosDonnees() {
+      return videosDonnees;
+   }
+
+   public ArrayList<Element> getPlaylistsDonnees() {
+      return playlistsDonnees;
+   }
 }

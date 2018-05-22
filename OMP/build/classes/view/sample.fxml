@@ -26,7 +26,7 @@
                 <VBox fx:id="Vbox">
                     <StackPane fx:id="StackPane" minHeight="0.0" minWidth="0.0" prefHeight="460.0" prefWidth="200.0">
                      <children>
-                            <TreeView id="PlaylistTree" fx:id="PlaylistTree" layoutY="100.0"  prefHeight="50.0" prefWidth="199.0" />
+                            <TreeView id="PlaylistTree" fx:id="PlaylistTree" layoutY="100.0"  prefHeight="50.0" prefWidth="199.0" onMouseClicked="#playlistSelectedToRead"/>
                             <TreeView id="ArtisteTree" fx:id="ArtisteTree" layoutY="200.0"   prefHeight="49.0" prefWidth="199.0" />
                             <TreeView id="PisteTree" fx:id="PisteTree" layoutX="-1.0"  prefHeight="46.0" prefWidth="200.0"  />
                             <TreeView id="AlbumTree" fx:id="AlbumTree" layoutY="300.0"  prefHeight="46.0" prefWidth="199.0" />
@@ -88,10 +88,10 @@
                         <Menu mnemonicParsing="false" text="File">
                             <items>
                                 <MenuItem fx:id="ouvertureDeFichier" mnemonicParsing="false" text="Ouvrir fichier..." />
-                                <MenuItem mnemonicParsing="false" text="Ajouter fichier..." />
-                                <MenuItem fx:id="ajoutAPlaylist" mnemonicParsing="false" text="Ajouter playlist" onAction="#ajouterPlaylist"/>
-
+                                <MenuItem mnemonicParsing="false" text="Ajouter fichier..." onAction="#ajouterFichierDepuisMenu" />
+                                <MenuItem fx:id="ajoutPlaylist" mnemonicParsing="false" text="Ajouter playlist" onAction="#ajouterPlaylist"/>
                             </items>
+                            <Menu fx:id="ajouterMediaAplaylist" mnemonicParsing="false" text="Ajouter media a une playlist" onAction="#ajouterUnMediaAUnePlaylist"/>
                         </Menu>
                         <Menu mnemonicParsing="false" text="Edit">
                             <items>
