@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<Bibliotheque>
+   <Audios>
+      
+   
+   
+   
+   
+   
+   
+   
+   
+   <Audio id="9">
+         <Chemin>C:\Users\Antoine\Music\duro.mp3</Chemin>
+         <Titre>Duro //Afromicro.com</Titre>
+         <Artiste>Tekno</Artiste>
+         <Duree>03:32</Duree>
+         <Album>www.afromicro.com</Album>
+         <Format>mp3</Format>
+      </Audio>
+   
+   
+   
+   
+   <Audio id="14">
+         <Chemin>C:\Users\Antoine\Downloads\Feelin' you.mp3</Chemin>
+         <Titre>Feelin' You</Titre>
+         <Artiste>Donell Jones</Artiste>
+         <Duree>04:17</Duree>
+         <Album>ClipConverter.cc</Album>
+         <Format>mp3</Format>
+      </Audio>
+   </Audios>
+   <Videos/>
+   <Playlists>
+      <Playlist>
+         <TitrePlaylist>maPlaylist</TitrePlaylist>
+         <Content/>
+      </Playlist>
+   <Playlist>
+         <TitrePlaylist>maPlaylist</TitrePlaylist>
+         <Content/>
+      </Playlist>
+   </Playlists>
+</Bibliotheque>

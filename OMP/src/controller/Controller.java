@@ -322,7 +322,8 @@ public class Controller /*implements Observer*/ {
          if (extracted.getFormat().equals("mp3")) {
             try {
                dernierContenuJoues.add(extracted.getTitre());
-               FXMLLoader loader = new FXMLLoader(getClass().getResource("../view/mediaPlayerView.fxml"));
+               File view = new File("mediaPlayerView.fxml");
+               FXMLLoader loader = new FXMLLoader(getClass().getResource(view.getPath()));
                Stage stage = new Stage();
                Parent root = (Parent) loader.load();
 
