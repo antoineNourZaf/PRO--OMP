@@ -48,6 +48,57 @@
          <Album/>
          <Format>wav</Format>
       </Audio>
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   <Audio id="36">
+         <Chemin>C:\Users\Antoine\Documents\VideoPlayer\03 Lady.mp3</Chemin>
+         <Titre>Lady</Titre>
+         <Artiste>The Whispers</Artiste>
+         <Duree>05:00</Duree>
+         <Album>The Whispers</Album>
+         <Format>mp3</Format>
+      </Audio>
+   <Audio id="37">
+         <Chemin>F:\Musique\1-02 I Heard It Through The Grapevin.m4a</Chemin>
+         <Titre>F:\Musique\1-02 I Heard It Through The Grapevin.m4a</Titre>
+         <Artiste>artiste inconnu</Artiste>
+         <Duree/>
+         <Album/>
+         <Format>format non trouvé</Format>
+      </Audio>
+   
+   <Audio id="39">
+         <Chemin>F:\Musique\03 My Love Is Your Love.m4a</Chemin>
+         <Titre>\03 My Love Is Your Love.m4a</Titre>
+         <Artiste>artiste inconnu</Artiste>
+         <Duree/>
+         <Album/>
+         <Format>format non trouvé</Format>
+      </Audio>
+   <Audio id="40">
+         <Chemin>F:\Musique\03 All Of You.m4a</Chemin>
+         <Titre>\03 All Of You.m4a</Titre>
+         <Artiste>artiste inconnu</Artiste>
+         <Duree/>
+         <Album/>
+         <Format>format non trouvé</Format>
+      </Audio>
+   <Audio id="41">
+         <Chemin>F:\Musique\Michael Jackson - P.Y.T. (Pretty Young Thing).m4a</Chemin>
+         <Titre>Michael Jackson - P.Y.T. (Pretty Young Thing).m4a</Titre>
+         <Artiste>artiste inconnu</Artiste>
+         <Duree/>
+         <Album/>
+         <Format>format non trouvé</Format>
+      </Audio>
    </Audios>
    <Videos>
       

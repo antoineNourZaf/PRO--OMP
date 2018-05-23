@@ -1,5 +1,8 @@
 package controller;
 
+import controller.BibliothequeManager;
+import controller.DataExtracteur;
+import controller.MediaPlayerViewController;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -85,7 +88,7 @@ public class Controller /*implements Observer*/ {
    public static boolean getLoggedIn = false;
 
    private Button Playlists;
-   private Recherche recherches;
+ 
 
    private BibliothequeManager bibli;
    private int nbOfPlaylists;
@@ -275,7 +278,9 @@ public class Controller /*implements Observer*/ {
             Element cheminAcces = (Element) audio.get(i).getElementsByTagName("Chemin").item(0);
 
             // si c'est un format de type audio affiche le type audio
-            if (format.getTextContent().equals("mp3") || format.getTextContent().equals("aac")) {
+            if (format.getTextContent().equals("mp3") || format.getTextContent().equals("m4a")
+                    || format.getTextContent().equals("wav") || format.getTextContent().equals("aiff")) 
+            {
                typeMedia = "audio";
 
             } // si c'est un format de type video affiche le type video
@@ -297,8 +302,8 @@ public class Controller /*implements Observer*/ {
                     cheminAcces.getTextContent());
             extractedmedias.add(media);
          }
-         
-         for (int i = 0; i < video.size(); ++ i) {
+
+         for (int i = 0; i < video.size(); ++i) {
             Element identifiant = (Element) video.get(i);
             String id = identifiant.getAttribute("id");
             Element titre = (Element) video.get(i).getElementsByTagName("Titre").item(0);
@@ -306,14 +311,14 @@ public class Controller /*implements Observer*/ {
             Element duree = (Element) video.get(i).getElementsByTagName("Duree").item(0);
             String typeMedia = "video";
             Element cheminAcces = (Element) video.get(i).getElementsByTagName("Chemin").item(0);
-            
+
             System.out.println(id + titre.getTextContent() + format.getTextContent()
-                    + duree.getTextContent()  + "" + "image vide" + typeMedia
+                    + duree.getTextContent() + "" + "image vide" + typeMedia
                     + cheminAcces.getTextContent());
-            
+
             MediaExtracted media = new MediaExtracted(
                     id, titre.getTextContent(), format.getTextContent(), "",
-                    duree.getTextContent(),"",  "", "", "video",
+                    duree.getTextContent(), "", "", "", "video",
                     cheminAcces.getTextContent());
             extractedmedias.add(media);
          }
@@ -359,7 +364,7 @@ public class Controller /*implements Observer*/ {
             loader.setController(controller);
 
             Scene scene = new Scene(root);
-
+            stage.setTitle("OMP - Player");
             stage.setScene(scene);
 
             stage.show();
@@ -450,14 +455,26 @@ public class Controller /*implements Observer*/ {
          // on recupere le chemin du fichier
          cheminFichier = new FileSystemOpen().run();
 
+         // On recupere le titre du media
+         String titre = "";
+         if (cheminFichier.contains("\\")) {
+            titre = cheminFichier.substring(cheminFichier.lastIndexOf("\\")+1);
+         } else {
+            titre = cheminFichier.substring(cheminFichier.lastIndexOf("/")+1);
+         }
+
          // On regarde si c est une video ou un audio
          fichierVideo = cheminFichier.contains("mp4") || cheminFichier.contains("flv");
 
          if (fichierVideo) {
             System.out.println("Fichier video ajouté");
             Video video = new Video(cheminFichier);
+            video.setTitre(titre);
             Media media = new Media(new File(cheminFichier).toURI().toString());
             Thread.sleep(200);
+            
+            // il est possible que la durée ne soit pas encore disponible au moment
+            // ou ces instructions sont exécutés
             if (!media.getDuration().isIndefinite() && !media.getDuration().isUnknown()) {
 
                double minute = media.getDuration().toMinutes() % 60;
@@ -469,8 +486,9 @@ public class Controller /*implements Observer*/ {
                video.setDuree(String.format("%02d:%02d", min, sec));
             }
             bibli.ajouterVideo(video);
-            Thread.sleep(250);
-         } else {
+            Thread.sleep(400);
+         } 
+         else {
 
             DataExtracteur md = new DataExtracteur(cheminFichier);
             Audio audio = new Audio(cheminFichier);
@@ -481,11 +499,14 @@ public class Controller /*implements Observer*/ {
             if (cheminFichier.contains("mp3")) {
                md.ExtractionMetadata(cheminFichier, audio, bibli);
             } else {
-               audio.setTitre(cheminFichier);
+
+               audio.setTitre(titre);
+               audio.setFormat();
                bibli.ajouterMusique(audio);
 
             }
          }
+         Thread.sleep(400);
          updateTableView();
 
       } catch (Exception e) {

@@ -34,6 +34,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.ToolBar;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -64,7 +65,7 @@ public class MediaPlayerViewController {
    private Duration duration;
    private BibliothequeManager bibli;
    private String path;
-   
+
    @FXML
    private MediaView mediaView;
    @FXML
@@ -95,15 +96,16 @@ public class MediaPlayerViewController {
    private ImageView imageView;
 
    public void setMedia(String path) {
-      
+
       this.path = path;
       media = new Media(new File(path).toURI().toString());
       mediaPlayer = new MediaPlayer(media);
 
       // Creer la vue à partir du media player si c'est une video.
       if (media.getSource().contains("mp4") || media.getSource().contains("flv")) {
+
          mediaView.setMediaPlayer(mediaPlayer);
-         
+
          // On regle la resolution du lecteur afin qu'il s'adapte à celle de la video
          DoubleProperty mvw = mediaView.fitWidthProperty();
          DoubleProperty mvh = mediaView.fitHeightProperty();
@@ -111,18 +113,16 @@ public class MediaPlayerViewController {
          mvh.bind(Bindings.selectDouble(mediaView.sceneProperty(), "height"));
          mediaView.setViewport(new Rectangle2D(0, 0, mediaView.getFitWidth(), mediaView.getFitHeight()));
          mediaView.setPreserveRatio(true);
+         mediaView.setVisible(true);
          imageView.setVisible(false);
-      } 
-      // Sinon on affiche une image
+         fsButton.setVisible(true);
+      } // Sinon on affiche une image
       else {
+
+         imageView.setVisible(true);
          mediaView.setVisible(false);
-         DoubleProperty mvw = imageView.fitWidthProperty();
-         DoubleProperty mvh = imageView.fitHeightProperty();
-         mvw.bind(Bindings.selectDouble(imageView.sceneProperty(), "width"));
-         mvh.bind(Bindings.selectDouble(imageView.sceneProperty(), "height"));
-         imageView.setViewport(new Rectangle2D(0, 0, imageView.getFitWidth(), imageView.getFitHeight()));
-         imageView.setPreserveRatio(true);
-         
+         // Comme on affiche une image, pas besoin de fullScreen
+         fsButton.setVisible(false);
       }
 
       volumeButton.setValue(mediaPlayer.getVolume() * 100);
@@ -159,16 +159,14 @@ public class MediaPlayerViewController {
 
       // On obtient le debit du media
       mRate = mediaPlayer.getRate();
+      playPressed(null);
    }
-   
-   public void setBibliotheque(BibliothequeManager bibliotheque){
+
+   public void setBibliotheque(BibliothequeManager bibliotheque) {
       bibli = bibliotheque;
    }
-   
-   
-   /**
-    * Initializes the controller class.
-    */
+
+   // Initializes the controller class.
    public void initialize() {
 
       fullscreen = false;
@@ -227,9 +225,11 @@ public class MediaPlayerViewController {
    @FXML
    private void backPressed(MouseEvent event) {
       mediaPlayer.stop();
+      playButton.setText("Play");
       setMedia(bibli.precedant(path));
+      playButton.setText("Pause");
       mediaPlayer.play();
-      
+
    }
 
    private void getVolume(MouseEvent event) {
@@ -240,11 +240,13 @@ public class MediaPlayerViewController {
    private void fullScreenClicked(MouseEvent event) {
 
       fullscreen = !fullscreen;
-      Stage stage = (Stage) mediaView.getScene().getWindow();
+      stage = (Stage) mediaView.getScene().getWindow();
+      
+      stage.setAlwaysOnTop(fullscreen);
       stage.setFullScreen(fullscreen);
-      toolBarButton.setVisible(!fullscreen);
-      sliderToolbar.setVisible(!fullscreen);
-
+      
+      //sliderToolbar.setVisible(false);
+      //toolBarButton.setVisible(false);
    }
 
    @FXML
@@ -261,6 +263,7 @@ public class MediaPlayerViewController {
 
    @FXML
    private void mouseOnVolume(MouseEvent event) {
+      
    }
 
    protected void updateValues() {
@@ -367,35 +370,21 @@ public class MediaPlayerViewController {
 
    @FXML
    private void onExitFullScreen(KeyEvent event) {
-      // Si la touche pressé est ESC, alors on sors du mode fullscreen, autrement
-      // il ne se passe rien
-      if (event.getCode() == KeyCode.ESCAPE && fullscreen) {
-         fullscreen = !fullscreen;
-         stage = (Stage) fsButton.getScene().getWindow();
-         stage.setFullScreen(fullscreen);
-         toolBarButton.setOpacity(1);
-         sliderToolbar.setOpacity(1);
-      }
+      
    }
 
    @FXML
    private void exitFullScreen(KeyEvent event) {
-      // Si la touche pressé est ESC, alors on sors du mode fullscreen, autrement
-      // il ne se passe rien
-      if (event.getCode() == KeyCode.ESCAPE && fullscreen) {
-         fullscreen = !fullscreen;
-         stage = (Stage) fsButton.getScene().getWindow();
-         stage.setFullScreen(fullscreen);
-         toolBarButton.setOpacity(1);
-         sliderToolbar.setOpacity(1);
-      }
+      
    }
 
    @FXML
    private void nextPressed(MouseEvent event) {
-      
+
       mediaPlayer.stop();
+      playButton.setText("Play");
       setMedia(bibli.suivant(path));
+      playButton.setText("Pause");
       mediaPlayer.play();
    }
 }

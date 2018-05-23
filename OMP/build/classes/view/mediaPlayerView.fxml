@@ -23,7 +23,7 @@
       <ToolBar fx:id="sliderToolbar" prefHeight="40.0" prefWidth="1249.0" GridPane.rowIndex="1">
          <items>
             <Slider fx:id="sliderTime" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onMouseDragged="#moveTime" prefHeight="61.0" prefWidth="932.0" showTickMarks="true" />
-            <Label fx:id="timeLabel" text="Label" />
+            <Label fx:id="timeLabel" text="Label" textFill="#708599" />
          </items>
       </ToolBar>
       <Pane onKeyTyped="#onExitFullScreen" prefHeight="718.0" prefWidth="1026.0">
@@ -50,7 +50,7 @@
             <Button mnemonicParsing="false" onMouseClicked="#nextPressed" prefHeight="25.0" prefWidth="41.0" text="Next" />
             <HBox prefHeight="100.0" prefWidth="546.0" />
             <Button fx:id="fsButton" mnemonicParsing="false" onMouseClicked="#fullScreenClicked" text="FullScreen" />
-            <Slider fx:id="volumeButton" blockIncrement="1.0" majorTickUnit="50.0" minorTickCount="1" onMouseClicked="#setVolume" onMouseDragged="#setVolume" onMouseEntered="#mouseOnVolume" onScroll="#setVolume" orientation="VERTICAL" prefHeight="100.0" prefWidth="109.0" showTickLabels="true" />
+            <Slider fx:id="volumeButton" blockIncrement="1.0" majorTickUnit="50.0" minorTickCount="1" onMouseClicked="#setVolume" onMouseDragged="#setVolume" onMouseEntered="#mouseOnVolume" onScroll="#setVolume" orientation="VERTICAL" prefHeight="100.0" prefWidth="109.0" showTickMarks="true" />
          </items>
       </ToolBar>
    </children>

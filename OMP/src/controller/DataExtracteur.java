@@ -1,8 +1,11 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+ /**
+  * DataExtracteur.java
+  * 
+  * Cette classe sert à obtenir les metadatas d'un fichier audio.
+  * Malheureuseument JavaFX ne permet d'obtenir que les metadonnes pour un 
+  * fichier au format mp3. Ainsi les autres formats ne sont pas pris en charge
+  * et on ne peut avoir leur description
+  */
 package controller;
 
 import model.Audio;
@@ -11,10 +14,6 @@ import java.util.Map;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 
-/**
- *
- * @author z-ack & Antoine
- */
 public class DataExtracteur {
 
    private Media media;
@@ -47,9 +46,8 @@ public class DataExtracteur {
          mediaPlayer.setOnReady(new Runnable() {
             @Override
             public void run() {
-                  
                for (Map.Entry<String, Object> entry : media.getMetadata().entrySet()) {
-
+                  
                   if (entry.getKey().equals("title")) {
                      audio.setTitre((String)entry.getValue());
                   }
@@ -60,15 +58,19 @@ public class DataExtracteur {
                      audio.setAlbum((String)entry.getValue());
                   }
                   if (!media.getDuration().isIndefinite() && !media.getDuration().isUnknown()) {
-
-                     double minute = media.getDuration().toMinutes() % 60;
-                     double secondes = media.getDuration().toSeconds() % 60;
-
+                     
+                     double minute = media.getDuration().toMinutes() % SECONDES;
+                     double secondes = media.getDuration().toSeconds() % SECONDES;
+                     
                      int min = (int)minute;
                      int sec = (int)secondes;
-
+                     
                      audio.setDuree(String.format("%02d:%02d",min, sec));
                   }
+                  // A chaque nouvelle information recueilli, on ajoute le fichier
+                  // a la bibliotheque. Cela provoque des ajouts repetitifs, mais
+                  // c'est le seul moyen trouver pour l'instant pour gérer la synchronisation
+                  // entre l'ajout a la bibliotheque et le recueil des metadonnes
                   manager.ajouterMusique(audio);
                }
             }
