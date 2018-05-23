@@ -117,11 +117,7 @@ public class Controller /*implements Observer*/ {
 
    private void initializeBibli() {
       bibli = new BibliothequeManager();
-      try {
-         bibli.createBibliotheque();
-      } catch (Exception e) {
-
-      }
+      
    }
 
    private void initializePopUp() {

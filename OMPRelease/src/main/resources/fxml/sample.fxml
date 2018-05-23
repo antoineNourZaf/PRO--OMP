@@ -12,32 +12,26 @@
 <?import javafx.scene.control.Label?>
 
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.Controller">
-    <bottom>
-        <TextFlow fx:id="affichage" prefHeight="29.0" prefWidth="1200.0" BorderPane.alignment="CENTER">
-            <children>
-                <TextField fx:id="entreeUtilisateur" onInputMethodTextChanged="#rechercheDemandee" prefHeight="27.0" prefWidth="200.0" />
-                <Button id="searchButton" fx:id="searchButton" mnemonicParsing="false" onAction="#searchButtonClicked" prefHeight="27.0" prefWidth="121.0" text="Rechercher" />
-            </children>
-        </TextFlow>
-    </bottom>
     <left>
         <ScrollPane prefHeight="460.0" prefWidth="200.0" BorderPane.alignment="CENTER">
             <content>
                 <VBox fx:id="Vbox">
-                    <StackPane fx:id="StackPane" minHeight="0.0" minWidth="0.0" prefHeight="460.0" prefWidth="200.0">
-                     <children>
-                            <TreeView id="PlaylistTree" fx:id="PlaylistTree" layoutY="100.0"  prefHeight="50.0" prefWidth="199.0" onMouseClicked="#playlistSelectedToRead"/>
-                            <TreeView id="ArtisteTree" fx:id="ArtisteTree" layoutY="200.0"   prefHeight="49.0" prefWidth="199.0" />
-                            <TreeView id="PisteTree" fx:id="PisteTree" layoutX="-1.0"  prefHeight="46.0" prefWidth="200.0"  />
-                            <TreeView id="AlbumTree" fx:id="AlbumTree" layoutY="300.0"  prefHeight="46.0" prefWidth="199.0" />
-                     </children>
-                    </StackPane>
+                   <children>
+                       <StackPane fx:id="StackPane" minHeight="0.0" minWidth="0.0" prefHeight="460.0" prefWidth="200.0">
+                        <children>
+                               <TreeView id="PlaylistTree" fx:id="PlaylistTree" layoutY="100.0" onMouseClicked="#playlistSelectedToRead" prefHeight="50.0" prefWidth="199.0" />
+                               <TreeView id="ArtisteTree" fx:id="ArtisteTree" layoutY="200.0" prefHeight="49.0" prefWidth="199.0" />
+                               <TreeView id="PisteTree" fx:id="PisteTree" layoutX="-1.0" prefHeight="46.0" prefWidth="200.0" />
+                               <TreeView id="AlbumTree" fx:id="AlbumTree" layoutY="300.0" prefHeight="46.0" prefWidth="199.0" />
+                        </children>
+                       </StackPane>
+                   </children>
                 </VBox>
             </content>
         </ScrollPane>
     </left>
     <right>
-        <SplitPane dividerPositions="0.5, 0.5" orientation="VERTICAL" prefHeight="460.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+        <SplitPane orientation="VERTICAL" prefHeight="460.0" prefWidth="200.0" BorderPane.alignment="CENTER">
             <items>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="217.0" prefWidth="150.0">
                     <children>
@@ -45,7 +39,7 @@
                             <content>
                                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="200.0">
                                     <children>
-                                        <TextArea fx:id="affichageAmis" layoutX="-4.0" prefHeight="308.0" prefWidth="204.0" />
+                                        <TextArea fx:id="affichageAmis" layoutX="-4.0" prefHeight="673.0" prefWidth="204.0" />
                                         <Button id="contenusAjoutes" layoutX="1.0" mnemonicParsing="false" onAction="#derniersContenusAjoutes" prefHeight="40.0" prefWidth="189.0" text="Derniers medias joués" />
                                     </children>
                                 </AnchorPane>
@@ -53,45 +47,42 @@
                         </ScrollPane>
                     </children>
                 </AnchorPane>
-                <Button fx:id="afficheInfos" mnemonicParsing="false" onAction="#afficherInfos" text="Informations media" />
-                <TextArea fx:id="affichageInfos" prefHeight="209.0" prefWidth="184.0" />
             </items>
         </SplitPane>
     </right>
     <top>
-        <GridPane prefHeight="124.0" prefWidth="1200.0" BorderPane.alignment="CENTER">
+        <GridPane prefHeight="124.0" prefWidth="1176.0" BorderPane.alignment="CENTER">
             <columnConstraints>
                 <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                 <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
             </columnConstraints>
             <rowConstraints>
-                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints maxHeight="62.0" minHeight="10.0" prefHeight="41.0" vgrow="SOMETIMES" />
+                <RowConstraints maxHeight="85.0" minHeight="10.0" prefHeight="83.0" vgrow="SOMETIMES" />
             </rowConstraints>
             <children>
                 <SplitPane dividerPositions="0.5" orientation="VERTICAL" prefHeight="71.0" prefWidth="600.0" GridPane.rowIndex="1">
                     <items>
-                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="57.0" prefWidth="598.0">
-                            <children>
-                        <Button fx:id="ouvertureFichier" mnemonicParsing="false" onAction="#openFileSystem" prefHeight="27.0" prefWidth="116.0" text="Ouvrir Fichier" />
-                            </children>
+                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="1.0" prefWidth="598.0">
                         </AnchorPane>
                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="84.0" prefWidth="548.0">
                             <children>
-                                <TextField fx:id="playlistOuInsere" layoutX="328.0" layoutY="-1.0" />
+                                <TextField fx:id="playlistOuInsere" layoutX="344.0" layoutY="-1.0" prefHeight="27.0" prefWidth="151.0" />
+                                <Button id="searchButton" fx:id="searchButton" layoutX="220.0" layoutY="-2.0" mnemonicParsing="false" onAction="#searchButtonClicked" prefHeight="27.0" prefWidth="121.0" text="Rechercher" />
                             </children>
                         </AnchorPane>
                     </items>
                 </SplitPane>
-                <MenuBar fx:id="FileMenu" minHeight="-Infinity" minWidth="-Infinity" prefHeight="37.0" prefWidth="550.0">
+                <MenuBar fx:id="FileMenu" minHeight="-Infinity" minWidth="-Infinity" prefHeight="37.0" prefWidth="600.0">
                     <menus>
                         <Menu mnemonicParsing="false" text="File">
                             <items>
-                                <MenuItem fx:id="ouvertureDeFichier" mnemonicParsing="false" text="Ouvrir fichier..." />
-                                <MenuItem mnemonicParsing="false" text="Ajouter fichier..." onAction="#ajouterFichierDepuisMenu" />
-                                <MenuItem fx:id="ajoutPlaylist" mnemonicParsing="false" text="Ajouter playlist" onAction="#ajouterPlaylist"/>
+                                <MenuItem mnemonicParsing="false" onAction="#ajouterFichierDepuisMenu" text="Ajouter fichier..." />
+                                <MenuItem fx:id="ajoutPlaylist" mnemonicParsing="false" onAction="#ajouterPlaylist" text="Ajouter playlist" />
                             </items>
-                            <Menu fx:id="ajouterMediaAplaylist" mnemonicParsing="false" text="Ajouter media a une playlist" onAction="#ajouterUnMediaAUnePlaylist"/>
+                           <items>
+                               <Menu fx:id="ajouterMediaAplaylist" mnemonicParsing="false" onAction="#ajouterUnMediaAUnePlaylist" text="Ajouter media a une playlist" />
+                           </items>
                         </Menu>
                         <Menu mnemonicParsing="false" text="Edit">
                             <items>
