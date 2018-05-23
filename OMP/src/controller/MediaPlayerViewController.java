@@ -62,6 +62,9 @@ public class MediaPlayerViewController {
    private boolean fullscreen;
    private Stage stage;
    private Duration duration;
+   private BibliothequeManager bibli;
+   private String path;
+   
    @FXML
    private MediaView mediaView;
    @FXML
@@ -92,7 +95,8 @@ public class MediaPlayerViewController {
    private ImageView imageView;
 
    public void setMedia(String path) {
-
+      
+      this.path = path;
       media = new Media(new File(path).toURI().toString());
       mediaPlayer = new MediaPlayer(media);
 
@@ -155,10 +159,13 @@ public class MediaPlayerViewController {
 
       // On obtient le debit du media
       mRate = mediaPlayer.getRate();
-      
-      
-      
    }
+   
+   public void setBibliotheque(BibliothequeManager bibliotheque){
+      bibli = bibliotheque;
+   }
+   
+   
    /**
     * Initializes the controller class.
     */
@@ -219,6 +226,10 @@ public class MediaPlayerViewController {
 
    @FXML
    private void backPressed(MouseEvent event) {
+      mediaPlayer.stop();
+      setMedia(bibli.precedant(path));
+      mediaPlayer.play();
+      
    }
 
    private void getVolume(MouseEvent event) {
@@ -378,5 +389,13 @@ public class MediaPlayerViewController {
          toolBarButton.setOpacity(1);
          sliderToolbar.setOpacity(1);
       }
+   }
+
+   @FXML
+   private void nextPressed(MouseEvent event) {
+      
+      mediaPlayer.stop();
+      setMedia(bibli.suivant(path));
+      mediaPlayer.play();
    }
 }

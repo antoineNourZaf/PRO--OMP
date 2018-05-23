@@ -47,7 +47,7 @@
             <Button fx:id="playButton" mnemonicParsing="false" onMouseClicked="#playPressed" text="Play" />
             <Button fx:id="stopButton" mnemonicParsing="false" onMouseClicked="#stopPressed" text="Stop" />
             <Button fx:id="fastButton" mnemonicParsing="false" onMouseClicked="#accelerVideo" text="Fast" />
-            <Button mnemonicParsing="false" prefHeight="25.0" prefWidth="41.0" text="Next" />
+            <Button mnemonicParsing="false" onMouseClicked="#nextPressed" prefHeight="25.0" prefWidth="41.0" text="Next" />
             <HBox prefHeight="100.0" prefWidth="546.0" />
             <Button fx:id="fsButton" mnemonicParsing="false" onMouseClicked="#fullScreenClicked" text="FullScreen" />
             <Slider fx:id="volumeButton" blockIncrement="1.0" majorTickUnit="50.0" minorTickCount="1" onMouseClicked="#setVolume" onMouseDragged="#setVolume" onMouseEntered="#mouseOnVolume" onScroll="#setVolume" orientation="VERTICAL" prefHeight="100.0" prefWidth="109.0" showTickLabels="true" />

@@ -65,7 +65,7 @@ public class BibliothequeManager /*extends Observable*/ {
    public BibliothequeManager() {
 
       FICHIER_XML = new File("./media/bibliotheque.xml");
-      if (FICHIER_XML.exists()){
+      if (FICHIER_XML.exists()) {
          File directory = new File("./media");
          directory.mkdir();
       }
@@ -246,10 +246,10 @@ public class BibliothequeManager /*extends Observable*/ {
 
          Element titre = doc.createElement("Titre");
          titre.setTextContent(clip.getTitre().replace("\0", ""));
-         
+
          Element duree = doc.createElement("Duree");
          duree.setTextContent(clip.getDuree().replace("\0", ""));
-         
+
          Element format = doc.createElement("Format");
          format.setTextContent(clip.getFormat().replace("\0", ""));
 
@@ -257,7 +257,7 @@ public class BibliothequeManager /*extends Observable*/ {
          video.appendChild(titre);
          video.appendChild(duree);
          video.appendChild(format);
-         
+
          System.out.println("passe dans ajoutVideo");
       } catch (IOException | TransformerException | DOMException | SAXException ex) {
          Logger.getLogger(BibliothequeManager.class.getName()).log(Level.SEVERE, null, ex);
@@ -379,7 +379,7 @@ public class BibliothequeManager /*extends Observable*/ {
          // Recuperation de l'element <Playlists>
          NodeList audiosList = doc.getElementsByTagName("Playlists");
          Node audio = audiosList.item(0);
-         
+
          // Retrouver la playlist ou on veut ajouter la chanson
          NodeList titrePList = doc.getElementsByTagName("TitrePlaylist");
          int nbPlaylist = titrePList.getLength();
@@ -389,40 +389,30 @@ public class BibliothequeManager /*extends Observable*/ {
 
             // On trouve le nom de la playlist
             if (titrePList.item(i).getTextContent().equals(titrePlaylist)) {
-               
+
                Node titreP = titrePList.item(i);
                // On recupere le parent <Playlist>
                Node playlist = titreP.getParentNode();
-               
+
                NodeList contents = playlist.getChildNodes();
+               // On choisit la balise <Content> a laquelle on ajoute le noeud
+               // fils <MediaID>
                for (int k = 0; k < contents.getLength(); ++k) {
-                  if (contents.item(k).getNodeName().equals("Content")){
+                  if (contents.item(k).getNodeName().equals("Content")) {
                      Node content = contents.item(k);
-                     
-                     System.out.println(content.getParentNode().getNodeName());
+
                      mediaId.setTextContent(getId(path));
-                     System.out.println(getId(path));
-                     System.out.println(content.getNodeName());
-                     
                      playlist.appendChild(content);
                      content.appendChild(mediaId);
-                     
+
                      doc.normalize();
                      docToXML();
-                     if (content.hasChildNodes()) {
-                        System.out.println("Append reussi");
-                        for (int j = 0; j < content.getChildNodes().getLength();j++) {
-                           System.out.println(content.getChildNodes().item(j).getNodeName());
-                           System.out.println(content.getChildNodes().item(j).getTextContent());
-                        }
-                     }
-                     return;
                   }
                }
 
             }
          }
-         
+
       } catch (IOException | SAXException e) {
 
       }
@@ -561,5 +551,45 @@ public class BibliothequeManager /*extends Observable*/ {
 
       return path;
    }
-
+   
+   public String suivant(String musiqueActuelle) {
+      
+      String suivant = "";
+      
+      NodeList chemins = doc.getElementsByTagName("Chemin");
+      
+      // Parcours de la liste
+      for (int i = 0; i < chemins.getLength(); ++i) {
+         Node chemin = chemins.item(i);
+         
+         // si on trouve la musique actuelle, on retourne la musique suivante
+         if (chemin.getTextContent().equals(musiqueActuelle)) {
+            suivant = chemins.item((i+1) % chemins.getLength()).getTextContent();
+         }
+      }
+      return suivant;
+   }
+   
+   public String precedant(String musiqueActuelle) {
+      
+      String precedant = "";
+      
+      NodeList chemins = doc.getElementsByTagName("Chemin");
+      
+      // Parcours de la liste
+      for (int i = 0; i < chemins.getLength(); ++i) {
+         
+         Node chemin = chemins.item(i);
+         
+         // si on trouve la musique actuelle, on retourne la musique suivante
+         if (chemin.getTextContent().equals(musiqueActuelle)) {
+            
+            if (i == 0)
+               i = chemins.getLength();
+            
+            precedant = chemins.item((i-1)).getTextContent();
+         }
+      }
+      return precedant;
+   }
 }

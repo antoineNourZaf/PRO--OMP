@@ -355,6 +355,7 @@ public class Controller /*implements Observer*/ {
 
             MediaPlayerViewController controller = loader.getController();
             controller.setMedia(extracted.getCheminAcces());
+            controller.setBibliotheque(bibli);
             loader.setController(controller);
 
             Scene scene = new Scene(root);
