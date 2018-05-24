@@ -63,7 +63,7 @@ public class BibliothequeManager /*extends Observable*/ {
     */
    public BibliothequeManager() {
 
-      FICHIER_XML = new File("/media/bibliotheque.xml");
+      FICHIER_XML = new File("bibliotheque/bibliotheque.xml");
       
       try {
 
@@ -72,7 +72,7 @@ public class BibliothequeManager /*extends Observable*/ {
          doc = dBuilder.newDocument();
 
          if (!FICHIER_XML.exists()) {
-            File directory = new File("/media");
+            File directory = new File("bibliotheque");
             directory.mkdir();
 
             // Element bibliothèque
@@ -99,22 +99,10 @@ public class BibliothequeManager /*extends Observable*/ {
          Logger.getLogger(BibliothequeManager.class.getName()).log(Level.SEVERE, null, ex);
       }
       givenId = getLastId();
-
+      
    }
 
-   /**
-    * Creation du fichier contenant la bibliotheque. Il s'agit d'un fichier XML
-    * qui sera sauvegarder et dont nous lirons le contenu. Il n'est crée qu'une
-    * seule fois dès le premier lancement du lecteur
-    *
-    * @throws TransformerConfigurationException
-    * @throws TransformerException
-    */
-   private void createBibliotheque() throws TransformerConfigurationException, TransformerException {
-
-   }
-
-   /**
+  /**
     * Cette fonction ajoute au fichier xml de la bibliotheque les details de la
     * musique que l'on veut.
     *
@@ -123,7 +111,7 @@ public class BibliothequeManager /*extends Observable*/ {
    public void ajouterMusique(Audio chanson) {
 
       try {
-
+         System.out.println(FICHIER_XML.getAbsolutePath());
          doc = dBuilder.parse(FICHIER_XML.getAbsolutePath());
          doc.normalize();
          NodeList audiosList = doc.getElementsByTagName("Audios");

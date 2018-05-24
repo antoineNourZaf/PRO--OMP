@@ -10,7 +10,8 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-<GridPane fx:id="gridPane" onKeyTyped="#exitFullScreen" prefHeight="829.0" prefWidth="1026.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.MediaPlayerViewController">
+<GridPane fx:id="gridPane" prefHeight="829.0" prefWidth="1026.0" style="-fx-background-color: black;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.MediaPlayerViewController">
+   
    <columnConstraints>
       <ColumnConstraints />
    </columnConstraints>
@@ -26,12 +27,12 @@
             <Label fx:id="timeLabel" text="Label" />
          </items>
       </ToolBar>
-      <Pane onKeyTyped="#onExitFullScreen" prefHeight="718.0" prefWidth="1026.0">
+      <Pane prefHeight="718.0" prefWidth="1026.0" style="-fx-background-color: black;">
          <children>
             <Group fx:id="groupScene">
                <children>
                   <MediaView fx:id="mediaView" onMouseClicked="#onClickMediaView" />
-                  <ImageView fx:id="imageView" fitHeight="644.0" fitWidth="1028.0" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fx:id="imageView" fitHeight="644.0" fitWidth="1028.0" onMouseClicked="#onClickMediaView" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../img/music.jpg" />
                      </image>
@@ -50,7 +51,7 @@
             <Button mnemonicParsing="false" onMouseClicked="#nextPressed" prefHeight="25.0" prefWidth="41.0" text="Next" />
             <HBox prefHeight="100.0" prefWidth="546.0" />
             <Button fx:id="fsButton" mnemonicParsing="false" onMouseClicked="#fullScreenClicked" text="FullScreen" />
-            <Slider fx:id="volumeButton" blockIncrement="1.0" majorTickUnit="50.0" minorTickCount="1" onMouseClicked="#setVolume" onMouseDragged="#setVolume" onMouseEntered="#mouseOnVolume" onScroll="#setVolume" orientation="VERTICAL" prefHeight="100.0" prefWidth="109.0" showTickMarks="true" />
+            <Slider fx:id="volumeButton" blockIncrement="1.0" majorTickUnit="50.0" minorTickCount="1" onMouseClicked="#setVolume" onMouseDragged="#setVolume" onScroll="#setVolume" orientation="VERTICAL" prefHeight="100.0" prefWidth="109.0" showTickMarks="true" />
          </items>
       </ToolBar>
    </children>

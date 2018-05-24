@@ -37,6 +37,7 @@ import javafx.scene.control.ToolBar;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
@@ -62,7 +63,7 @@ public class MediaPlayerViewController {
    private double mRate;
    private boolean fullscreen;
    private Stage stage;
-   private Duration duration;
+   private Duration duree;
    private BibliothequeManager bibli;
    private String path;
 
@@ -95,6 +96,15 @@ public class MediaPlayerViewController {
    @FXML
    private ImageView imageView;
 
+   /**
+    * Cette fonction permet de definir le media pour le player. Elle recupere
+    * son chemin et initialise les composants dont le player a besoin pour la
+    * lecture d'un audio ou d'une video. Elle definit également des
+    * comportements selon les interactions avec l'utilisateur qui n'ont pu être
+    * paramétré dans le FXML
+    *
+    * @param path
+    */
    public void setMedia(String path) {
 
       this.path = path;
@@ -130,9 +140,9 @@ public class MediaPlayerViewController {
       sliderTime.valueProperty().addListener(new InvalidationListener() {
          public void invalidated(Observable ov) {
             if (sliderTime.isValueChanging()) {
-               // 
-               if (duration != null) {
-                  mediaPlayer.seek(duration.multiply(sliderTime.getValue() / 100));
+
+               if (duree != null) {
+                  mediaPlayer.seek(duree.multiply(sliderTime.getValue() / 100));
                }
                updateValues();
 
@@ -158,29 +168,53 @@ public class MediaPlayerViewController {
       mediaPlayer.setOnReady(new Runnable() {
          @Override
          public void run() {
-            duration = mediaPlayer.getMedia().getDuration();
+            duree = mediaPlayer.getMedia().getDuration();
             updateValues();
          }
       });
 
       // On obtient le debit du media
       mRate = mediaPlayer.getRate();
+
+      // On lance le media
       playPressed(null);
    }
 
+   // Lie le controlleur et la bibliotheque pour lire les informations de celle-ci
+   // et les utiliser pour le lecteur
    public void setBibliotheque(BibliothequeManager bibliotheque) {
       bibli = bibliotheque;
    }
 
    // Initializes the controller class.
    public void initialize() {
-
       fullscreen = false;
-
    }
 
    public MediaView getMediaView() {
       return mediaView;
+   }
+
+   public MediaPlayer getMediaPlayer() {
+      return mediaPlayer;
+   }
+
+   public boolean isFullScreen() {
+      return fullscreen;
+   }
+
+   public void exitFullScreen() {
+      if (fullscreen) {
+         fullscreen = false;
+         Stage scene = (Stage) mediaView.getScene().getWindow();
+
+         scene.setAlwaysOnTop(fullscreen);
+         scene.setFullScreen(fullscreen);
+
+         sliderToolbar.setVisible(!fullscreen);
+         toolBarButton.setVisible(!fullscreen);
+         mediaView.setPreserveRatio(true);
+      }
    }
 
    @FXML
@@ -213,6 +247,8 @@ public class MediaPlayerViewController {
    @FXML
    private void playPressed(MouseEvent event) {
       mediaPlayer.play();
+      
+      // On change le label
       if (playButton.getText().equals("Play")) {
          playButton.setText("Pause");
          mediaPlayer.play();
@@ -246,18 +282,27 @@ public class MediaPlayerViewController {
    private void fullScreenClicked(MouseEvent event) {
 
       fullscreen = !fullscreen;
-      stage = (Stage) mediaView.getScene().getWindow();
-      
-      stage.setAlwaysOnTop(fullscreen);
-      stage.setFullScreen(fullscreen);
-      
-      //sliderToolbar.setVisible(false);
-      //toolBarButton.setVisible(false);
+      Stage scene = (Stage) mediaView.getScene().getWindow();
+
+      scene.setAlwaysOnTop(fullscreen);
+      scene.setFullScreen(fullscreen);
+
+      sliderToolbar.setVisible(false);
+      toolBarButton.setVisible(false);
+      mediaView.setPreserveRatio(false);
    }
 
    @FXML
    private void onClickMediaView(MouseEvent event) {
       mediaPlayer.play();
+      
+      // Si il y a un double click sur l ecran, on va au suivant
+      if (event.getClickCount()==2){
+         mediaPlayer.stop();
+         playButton.setText("Pause");
+         setMedia(bibli.suivant(path));
+         mediaPlayer.play();
+      }
       if (playButton.getText().equals("Play")) {
          playButton.setText("Pause");
          mediaPlayer.play();
@@ -267,20 +312,15 @@ public class MediaPlayerViewController {
       }
    }
 
-   @FXML
-   private void mouseOnVolume(MouseEvent event) {
-      
-   }
-
    protected void updateValues() {
-      if (timeLabel != null && sliderTime != null && duration != null) {
+      if (timeLabel != null && sliderTime != null && duree != null) {
          Platform.runLater(new Runnable() {
             public void run() {
                Duration currentTime = mediaPlayer.getCurrentTime();
-               timeLabel.setText(formatTime(currentTime, duration));
-               sliderTime.setDisable(duration.isUnknown());
-               if (!sliderTime.isDisabled() && duration.greaterThan(Duration.ZERO) && !sliderTime.isValueChanging()) {
-                  sliderTime.setValue(currentTime.divide(duration).toMillis() * 100.0);
+               timeLabel.setText(formatTime(currentTime, duree));
+               sliderTime.setDisable(duree.isUnknown());
+               if (!sliderTime.isDisabled() && duree.greaterThan(Duration.ZERO) && !sliderTime.isValueChanging()) {
+                  sliderTime.setValue(currentTime.divide(duree).toMillis() * 100.0);
                }
 
             }
@@ -288,41 +328,41 @@ public class MediaPlayerViewController {
       }
    }
 
-   private static String formatTime(Duration elapsed, Duration duration) {
-      int intElapsed = (int) floor(elapsed.toSeconds());
-      int elapsedHours = intElapsed / (60 * 60);
-      if (elapsedHours > 0) {
-         intElapsed -= elapsedHours * 60 * 60;
+   private static String formatTime(Duration ecoulees, Duration duree) {
+      int intEcoule = (int) floor(ecoulees.toSeconds());
+      int heuresEcoulees = intEcoule / (60 * 60);
+      if (heuresEcoulees > 0) {
+         intEcoule -= heuresEcoulees * 60 * 60;
       }
-      int elapsedMinutes = intElapsed / 60;
-      int elapsedSeconds = intElapsed - elapsedHours * 60 * 60
-              - elapsedMinutes * 60;
+      int minEcoulees = intEcoule / 60;
+      int secEcoulees = intEcoule - heuresEcoulees * 60 * 60
+              - minEcoulees * 60;
 
-      if (duration.greaterThan(Duration.ZERO)) {
-         int intDuration = (int) floor(duration.toSeconds());
-         int durationHours = intDuration / (60 * 60);
-         if (durationHours > 0) {
-            intDuration -= durationHours * 60 * 60;
+      if (duree.greaterThan(Duration.ZERO)) {
+         int intDuree = (int) floor(duree.toSeconds());
+         int dureeHeure = intDuree / (60 * 60);
+         if (dureeHeure > 0) {
+            intDuree -= dureeHeure * 60 * 60;
          }
-         int durationMinutes = intDuration / 60;
-         int durationSeconds = intDuration - durationHours * 60 * 60
-                 - durationMinutes * 60;
-         if (durationHours > 0) {
+         int dureeMin = intDuree / 60;
+         int dureeSec = intDuree - dureeHeure * 60 * 60
+                 - dureeMin * 60;
+         if (dureeHeure > 0) {
             return format("%d:%02d:%02d/%d:%02d:%02d",
-                    elapsedHours, elapsedMinutes, elapsedSeconds,
-                    durationHours, durationMinutes, durationSeconds);
+                    heuresEcoulees, minEcoulees, secEcoulees,
+                    dureeHeure, dureeMin, dureeSec);
          } else {
             return format("%02d:%02d/%02d:%02d",
-                    elapsedMinutes, elapsedSeconds, durationMinutes,
-                    durationSeconds);
+                    minEcoulees, secEcoulees, dureeMin,
+                    dureeSec);
          }
       } else {
-         if (elapsedHours > 0) {
-            return format("%d:%02d:%02d", elapsedHours,
-                    elapsedMinutes, elapsedSeconds);
+         if (heuresEcoulees > 0) {
+            return format("%d:%02d:%02d", heuresEcoulees,
+                    minEcoulees, secEcoulees);
          } else {
-            return format("%02d:%02d", elapsedMinutes,
-                    elapsedSeconds);
+            return format("%02d:%02d", minEcoulees,
+                    secEcoulees);
          }
       }
    }
@@ -373,17 +413,6 @@ public class MediaPlayerViewController {
          mediaPlayer.setRate(mRate);
       }
    }
-
-   @FXML
-   private void onExitFullScreen(KeyEvent event) {
-      
-   }
-
-   @FXML
-   private void exitFullScreen(KeyEvent event) {
-      
-   }
-
    @FXML
    private void nextPressed(MouseEvent event) {
 
@@ -392,5 +421,9 @@ public class MediaPlayerViewController {
       setMedia(bibli.suivant(path));
       playButton.setText("Pause");
       mediaPlayer.play();
+   }
+
+   private void escapeTouch(KeyEvent event) {
+      System.out.println("Touch escape");
    }
 }

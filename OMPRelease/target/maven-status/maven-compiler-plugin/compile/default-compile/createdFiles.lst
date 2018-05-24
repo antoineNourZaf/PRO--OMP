@@ -13,6 +13,7 @@ controller\BibliothequeManager.class
 controller\DataExtracteur.class
 controller\MediaPlayerViewController$6.class
 model\Audio.class
+controller\Controller$1.class
 model\Video.class
 controller\MediaPlayerViewController$3.class
 controller\DataExtracteur$1.class
@@ -23,4 +24,5 @@ controller\MediaPlayerViewController.class
 model\MediaExtracted.class
 com\mycompany\omprelease\MainApp.class
 controller\AudioPlayer$3.class
+controller\Controller$2.class
 controller\MediaPlayerViewController$7.class

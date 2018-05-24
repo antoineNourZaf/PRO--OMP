@@ -39,7 +39,7 @@ public class ParserXML {
          /*
 	     *  création d'un Document
           */
-         final Document document = builder.parse(new File("/media/bibliotheque.xml"));
+         final Document document = builder.parse(new File("bibliotheque/bibliotheque.xml"));
 
          /*
 	     *  récupération de l'Element racine
